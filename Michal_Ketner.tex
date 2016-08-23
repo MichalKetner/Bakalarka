@@ -1,0 +1,1698 @@
+\documentclass[12pt,a4paper]{article}
+% Pri pouziti masivnejsich fontu (pripad pana Jurenky) lze uzit mensi pismo:
+%\documentclass[11pt,a4paper]{article}
+%
+\usepackage{color} %pro barevné odkazy, pøíp. nadpisy
+\definecolor{odkazy}{rgb}{0.21,0.27,0.53} %tmavì modrá
+\definecolor{nadpisy}{rgb}{0.5812,0.0665,0.0659} %cihlová
+%
+% Volba pdf driveru:
+%\usepackage[dvipdfm]{hyperref}%
+%\usepackage[pdftex]{hyperref}%
+% Parametry prevodu do pdf
+\providecommand{\hypersetup}[1]{}%
+\hypersetup{%
+%unicode,% ? Pravdepodobne bezvyznamne
+pdfauthor={Michal Ketner},
+pdftitle={Konstruktivní univerzum L},
+pdfsubject={Konstruktivní univerzum L},
+pdfkeywords={Konstruktivní univerzum L, vnit\v{r}n\'{i} modely},
+pdffitwindow=false,% Inicialni umisteni textu v okne Readeru
+bookmarksopen=true,% Panel zalozek inicialne zobrazen
+% Je-li tohle nastaveno jinak, nektere odkazy nekdy nefunguji
+hypertexnames=false,
+plainpages=false,
+%pdfpagelabels,
+%
+breaklinks=true,% Radkovy lom smi prijit do klikatelneho odkazu
+linkcolor=odkazy,% Graficka podoba odkazu
+citecolor=odkazy,% ...
+colorlinks=true,% ...
+pdfhighlight=/O% ... (vzhled odkazu pri stisknuti)
+}%
+% Inputenc je asi zbytecne.
+% Alespon v MikTeXu je kodovani lepsi specifikovat v prikazovem radku:
+%\usepackage[cp1250]{inputenc}
+% Option 'split' ovlivnuje deleni slov obsahujicich v sobe rozdelovnik
+\usepackage[czech]{babel} %dnes u je vak hotová integrace èetiny do babelu
+%\usepackage[split]{czech} %dnes u je vak hotová integrace èetiny do babelu
+%
+\usepackage{logdp} %uiteèné drobnosti
+
+\usepackage{amsmath} %nová prostøedí pro matematiku a vylepení tìch stávajících
+\usepackage{latexsym,amsfonts,amssymb} %nová písmenka
+\usepackage{fancyhdr} %záhlaví a zápatí
+\usepackage[nottoc]{tocbibind} %pøidá do obsahu poloky Literatura a Rejstøík
+%\usepackage{colorsection} %chcete-li barevné nadpisy,
+% (pouije se barva z definice \definecolor{nadpisy})
+% Makra pro sazbu dukazu v gentzenovskem kalkulu vytvoril Sam Buss
+%\usepackage{bussproofs}
+\usepackage{Ylog} % ruzna makra uzitecna pro logiku (Svejdar)
+% Zmena radkovani je uzitecna pri volbe masivnich fontu, viz vyse
+%\def\baselinestretch{1.2} %øádkování
+\pagestyle{plain}
+%pøedbìné nastavení hlavièky (balík fancyhdr)
+%\headheight 13.6pt %moná ji bude tøeba zvednout, fancyhdr si pak stìuje: \headheight
+% too small, make it at least Xpt
+\headheight 14.5pt %moná ji bude tøeba zvednout, fancyhdr si pak stìuje: \headheight too \fancyhead{}
+\fancyhead[R]{\leftmark}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+%
+\newtheorem{veta}{V\v{e}ta}[section]%[subsection]
+\newtheorem{lemma}[veta]{Lemma}
+\newtheorem{definice}[veta]{Definice}
+
+\newenvironment{proof}
+{\noindent \textit{D\r{u}kaz.}}
+{\hspace*{\fill} $\Box$}
+
+\renewcommand{\theequation}{\thesection.\thesubsection.\arabic{equation}}
+%\usepackage{makeidx}
+%\makeindex %bude-li rejstøík
+\begin{document}
+
+%titulní stránka
+\begin{titlepage}
+%\fontsize{16.16pt}{25pt}\selectfont
+\Large
+\begin{center}
+Univerzita Karlova v Praze \\
+Filozofick\'{a} fakulta \\
+Katedra logiky
+
+\vspace{8.5em}
+\textsc{Michal Ketner}\\[1.4em]
+{%\color{nadpisy} %pro pøíp. barevný název
+Konstruktivn\'{i} univerzum $\mathbb{L}$\\
+The constructive universe $\mathbb{L}$\\}
+Bakal\'{a}\v{r}sk\'{a} pr\'{a}ce\\[6.8em]
+Vedouc\'{i} pr\'{a}ce: \\ Mgr. Radek Honz\'{i}k, Ph.D. \\[6.8em]
+2016
+\end{center}
+\end{titlepage}\
+
+
+
+
+
+\vspace{\fill}
+\noindent Prohla\v{s}uji, \v{z}e jsem bakal\'{a}\v{r}skou pr\'{a}ci vypracoval samostatn\v{e} a \v{z}e jsem
+uvedl  v\v{s}echny pou\v{z}it\'{e} prameny a literaturu.
+
+\bigskip
+\noindent V~Praze 13.~srpna 2016\\[3em]
+\hspace*{\fill}Michal Ketner\hspace*{3em}
+\clearpage
+
+\begin{abstract}
+\noindent Tato pr\'{a}ce zkoum\'{a} univerzum konstruktivn\'{i}ch mno\v{z}in $\mathbb{L}$, jak ho definoval G\"{o}del. Pr\'{a}ce srovn\'{a}v\'{a} dva zp\r{u}soby konstrukce $\mathbb{L}$: jeden p\v{r}es formalizaci relace spl\v{n}ov\'{a}n\'{i}, a druh\'{y} pomoc\'{i} kone\v{c}n\v{e} mnoha tzv. rudiment\'{a}rn\'{i}ch funkc\'{i}, kter\'{e} $\mathbb{L}$ generuj\'{i}. Pr\'{a}ce d\'{a}le povede k ov\v{e}\v{r}en\'{i} implikace $ Con(ZF) \rightarrow Con(ZFC + CH) $. Pr\'{a}ce m\'{a} podat ucelen\'{y} pohled na konstrukci $\mathbb{L}$ a ov\v{e}\v{r}en\'{i} relativn\'{i} konzistence $ CH $ 
+\\
+~\\
+\textbf{Kl\'{i}\v{c}ov\'{a} slova: Konstruktivn\'{i} univerzum L, vnit\v{r}n\'{i} modely}
+\end{abstract}
+
+\bigskip
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract}
+\noindent 
+The theme explores the universe of constructive set $\mathbb{L}$ as it was defined by G\"{o}del. The work compares two methods of construction $\mathbb{L}$ set: one through the formalization of satisfaction relationand the other one with several (finitely many) called rudimentary functions that generate $\mathbb{L}$. The work continues with verification of the implications $ Con(ZF) \rightarrow Con(ZFC + CH) $.  The goal is to give a comprehensive view of the construction $\mathbb{L}$ and verification of 's relative consistency $ CH $.
+\\
+~\\
+\textbf{Key words: Constructive universe L, inner models}
+\end{abstract}
+\clearpage
+
+\tableofcontents
+\clearpage
+
+
+\pagestyle{fancy} %detailní definice chování záhlaví
+\renewcommand{\sectionmark}[1]{\markboth{\slshape\thesection.\ #1}{}}
+\section{\'{U}vod}
+
+Na po\v{c}\'{a}tku 20.stolet\'{i} D. Hilbert vytvo\v{r}il seznam nejd\r{u}le\v{z}it\v{e}j\v{s}\'{i}ch matematick\'{y}ch probl\'{e}m\r{u}. Na prvn\'{i} m\'{i}sto seznamu za\v{r}adil ot\'{a}zku, zda-li existuje mno\v{z}ina  re\'{a}ln\'{y}ch \v{c}\'{i}sel, kter\'{a} nen\'{i} ani spo\v{c}etn\'{a} a ani nem\'{a} mohutnost jako cel\'{a} mno\v{z}ina re\'{a}ln\'{y}ch \v{c}\'{i}sel. Hypot\'{e}za, \v{z}e takov\'{a} mno\v{z}ina neexistuje, se naz\'{y}v\'{a} hypot\'{e}za kontinua (CH z contiuum hypothesis). Tuto ot\'{a}zku pota\v{z}mo odpov\v{e}d jde zobecnit pro ka\v{z}d\'{e} $ \aleph_\alpha $, pak se tento probl\'{e}m naz\'{y}v\'{a} zobecn\v{e}n\'{a} hypot\'{e}za kontinua (GCH z general contiuum hypothesis).
+
+Dal\v{s}\'{i}m probl\'{e}mem, co vrtal matematik\r{u}m hlavou, byla dokazatelnost axiomu v\'{y}b\v{e}ru (AC z axiom of choice) z axiom\r{u} teorie mno\v{z}in. Tyto probl\'{e}my nebyl schopen nikdo z matematik\r{u} vy\v{r}e\v{s}it. A\v{z} v roce 1940 Kurt G\"{o}del uk\'{a}zal, \v{z}e pokud p\v{r}edpokl\'{a}d\'{a}me bezespornost axiom\r{u} teorie mno\v{z}in, tak z axiom\r{u} nejde dok\'{a}zat ani negace axiomu v\'{y}b\v{e}ru ani negaci zobecn\v{e}n\'{e} hypot\'{e}zy kontinua, nebo-li \v{z}e axiom v\'{y}b\v{e}ru i zobecn\v{e}nou hypot\'{e}zu kontinua jde bezesporn\v{e} p\v{r}idat k axiom\r{u}m teorie mno\v{z}in. G\"{o}del pro tyto \'{u}\v{c}ely vytvo\v{r}il konstruktivn\'{i} universum $\mathbb{L}$. Toto universum se uk\'{a}zalo jako d\r{u}le\v{z}it\'{e} ve zkoum\'{a}n\'{i} vlastnostn\'{i} v teorii mno\v{z}in a proto si tato bakal\'{a}\v{r}sk\'{a} pr\'{a}ce dala za c\'{i}l popsat vlastnosti $\mathbb{L}$ .
+
+Pr\'{a}ce je rozd\v{e}lena na t\v{r}i sekce. Prvn\'{i} sekce se v\v{e}nuje p\v{r}\'{i}stup\r{u}m ke konstrukci univerza $\mathbb{L}$. Druhou sekci jsem v\v{e}noval univerzu $\mathbb{L}$ a jeho vlastnostem. T\v{r}et\'{i} \v{c}\'{a}st je v\v{e}nov\'{a}na d\r{u}kazu bezezpornosti p\v{r}id\'{a}n\'{i} $ AC $ a $ GCH$  k $ ZF$, pr\'{a}v\v{e} pomoc\'{i} $\mathbb{L}$.
+
+V prvn\'{i} podsekci prvn\'{i} sekce se tato pr\'{a}ce v\v{e}nuje konstrukci universa za pomoc\'{i} formalizace relace spl\v{n}ov\'{a}n\'{i}. Cel\'{a} tato podsekce je motivovan\'{a} knihou  \textit{K.Kunen, Set theory: An introduction to independence proofs}.
+V druh\'{e} podsekci prvn\'{i} sekce vytv\'{a}\v{r}\'{i}me $\mathbb{L}$ pomoc\'{i} uz\'{a}v\v{e}ru na rudiment\'{a}rn\'{i} funkce. Tato kapitola \v{c}erp\'{a} prim\'{a}rn\v{e} z knihy \textit{T. Jech, Set theory}, a\v{z} na  definici uz\'{a}v\v{e}ru, kter\'{a} je motivov\'{a}na definic\'{i} z knihy \textit{B.Balcar a P. \v{S}t\v{e}p\'{a}nek, Teorie mno\v{z}in}, ale upravena na jin\'{e} G\"{o}delovy operace.
+
+V prvn\'{i} podsekci druh\'{e} sekce se pr\'{a}ce v\v{e}nuje vlastnostem univerza $\mathbb{L}$ a p\v{r}ipravuje prostor pro d\r{u}kaz, \v{z}e $\mathbb{L}$ je model $ ZF$ , kter\'{e}mu se v\v{e}nuje podsekce n\'{a}sleduj\'{i}c\'{i}. Tato sekce \v{c}erp\'{a}m zejm\'{e}na z \textit{K.Kunen, Set theory: An introduction to independence proofs}. 
+Ve t\v{r}et\'{i} podsekci se v\v{e}nujeme \textit{axiomu konstruovatelnosti} p\v{r}ev\'{a}\v{z}n\v{e} podle {K.Kunen, Set theory: An introduction to independence proofs}.
+
+Posledn\'{i} sekce se zab\'{y}v\'{a} nez\'{a}visl\'{y}mi hypot\'{e}zami vzhledem k axiom\r{u}m $ ZF $. Pr\r{u}b\v{e}hu d\r{u}kaz\r{u} dok\'{a}\v{z}eme mimojin\'{e}, \v{z}e $\mathbb{L}$ je vnit\v{r}n\'{i} model ZF. 
+\newpage
+Po celou tuto pr\'{a}ci po\v{c}\'{i}tejme pro zjednodu\v{s}en\'{i}, \v{z}e:
+\begin{enumerate}
+  \item Pou\v{z}it\'{e} logick\'{e} symboly jsou pouze konjunce $ \wedge $, negace $ \neg $ a existen\v{c}n\'{i} kvantifik\'{a}tor $ \exists $. 
+  \item Formule neobsahuje predik\'{a}t rovnosti $ = $.
+  \item V\'{y}skyt predik\'{a}tu n\'{a}le\v{z}en\'{i} $\in$ je pouze ve formul\'{i}ch tvaru $u_i \in u_j$, kde $i \neq j$.
+  \item V\'{y}skyt  omezen\'{e}ho existen\v{c}n\'{i}ho kvantifik\'{a}toru $ \exists $ je pouze ve formuli tvaru $ \exists u_{m+1} \in u_i ~ \psi(u_1,..u_{m+1})$, kde $i\leq m $.
+\end{enumerate}
+Te\v{d} ke ka\v{z}d\'{e}mu bodu koment\'{a}\v{r}, pro\v{c} takov\'{e} omezen\'{i} m\r{u}\v{z}em p\v{r}ijmout.
+\begin{enumerate}
+  \item  Si m\r{u}\v{z}eme dovolit d\'{i}ky tomu, proto\v{z}e ostatn\'{i} spojky a kvantifik\'{a}tory se daj\'{i} vyj\'{a}d\v{r}it pomoc\'{i} $ \wedge $,$ \neg $,$\exists$. \\
+  \item Si m\r{u}\v{z}eme dovolit d\'{i}ky axiomu extenzionality, proto\v{z}e ten n\'{a}m d\'{a}v\'{a}, \v{z}e formuli x=y m\r{u}\v{z}eme nahradit ekvivalentn\'{i} formul\'{i} \[( (\forall u \in x) (u \in y ))\wedge ((\forall u \in y) (u \in x)) .\]
+  \item To je v po\v{r}\'{a}dku, proto\v{z}e formuli $x \in x$ m\r{u}\v{z}eme nahradit ekvivalentn\'{i} formul\'{i} \[ (\exists u \in x) (u=x) .\]
+  \item M\r{u}\v{z}eme, proto\v{z}e m\r{u}\v{z}eme v\v{s}echny prom\v{e}nn\'{e} p\v{r}ejmenovat tak, \v{z}e v\'{a}zan\'{a}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \\ prom\v{e}nn\'{a} bude m\'{i}t nejvy\v{s}\v{s}\'{i} index. 
+\end{enumerate} 
+\newpage
+\section{Konstrukce univerza} \label{sec:konstrukce}
+\subsection{Formalizace relace spl\v{n}ov\'{a}n\'{i}}
+V t\'{e}to podsekci se budeme v\v{e}novat konstrukci univerza $\mathbb{L}$ uvnit\v{r} teorie mno\v{z}in. Konstruktivn\'{i} universum zde bude vytvo\v{r}eno pomoc\'{i} formalizace logiky uvnit\v{r} teorie mno\v{z}in. \\
+
+Nejd\v{r}\'{i}ve si nadefinujme ohodnocen\'{i}, kter\'{e} pou\v{z}ijeme v dal\v{s}\'{i} definici.
+\begin{definice}%\bfindex{Notace}
+\textbf{Ohodnocen\'{i} \\ }
+Pro ka\v{z}d\'{e}  $\mathit{n} $ a pro ka\v{z}dou n-tici $ \langle x_0,..,x_{n-1} \rangle $ definujme $ \mathtt{s} $  jako funkci s defini\v{c}n\'{i}m oborem n a hodnotami
+\[  \mathtt{s}(i)=x_i.  \] 
+\end{definice}
+
+Definujme si te\v{d} mno\v{z}iny n-tic, kter\'{e} spl\v{n}uj\'{i} atomick\'{e} formule a mno\v{z}inu uz\'{a}v\v{e}ru existen\v{c}n\'{i}ho kvantifik\'{a}toru.
+\begin{definice}%\bfindex{Notace}
+~\\
+Nech\v{t} pro $ n \in \omega $ a i,j $ < $ n definujme: 
+\begin{itemize}
+\item  $ Proj(A,R,n) =  \{ \mathtt{s} \in A^n : \exists t \in R (t \upharpoonright n = \mathtt{s}) \}, $  
+\item  $ Diag_{\in}(A,n,i,j) =  \{ \mathtt{s} \in A^n : \mathtt{s}(i) \in \mathtt{s}(j) \}, $  
+\item $ Diag_{=}(A,n,i,j) =  \{ \mathtt{s} \in A^n : \mathtt{s}(i) = \mathtt{s}(j) \}.    $
+\end{itemize}
+\end{definice}
+Pomoc\'{i} t\v{e}chto definic\'{i} za\v{c}nem rekurzivn\v{e} uzav\'{i}rat n-tice na pr\r{u}nik a dopln\v{e}k a projekci a pak pomoc\'{i} t\v{e}chto mno\v{z}in nadefinujeme $Df$.
+
+\begin{definice}~\\
+Rekurz\'{i} p\v{r}es  $ k \in \omega $ definujeme  $ Df^+(k,A,n) $ : 
+\begin{center}
+\begin{enumerate}
+\item  
+\[ Df^+(0,A,n) = \{ Diag_{\in}(A,n,i,j): i,j <  n \} \cup  \] \[ \cup \{ Diag_{=}(A,n,i,j): i,j <  n \}  \]
+
+\item \[  Df^+(k+1,A,n) = Df^+(k,A,n) \cup \{ A^n-R: R \in Df^+(k,A,n) \} \cup \] \[ \cup \{ R \cap S: R,S \in Df^+(k,A,n) \} \cup \] \[ \cup \{ Proj(A,R,n) : R \in Df^+(k,A,n+1) \} \]   
+\end{enumerate}
+\end{center}
+\end{definice}
+
+Pomoc\'{i} $  Df^+(k,A,n) $ pak definujme $Df$ kter\'{e} je uz\'{a}v\v{e}rem na pr\r{u}nik, dopln\v{e}k a projekci.
+\begin{definice}
+\[  Df(A,n)= \bigcup \{Df^+(k,A,n):k \in \omega \} \]  
+
+\end{definice}
+N\'{a}sleduj\'{i}c\'{i} lemma je d\r{u}kaz o tom, \v{z}e $Df$ je opravdu uzav\v{r}eno na pr\r{u}nik, dopln\v{e}k a projekci.
+
+\begin{lemma}~\\
+Pro relace $ R,S $, mno\v{z}inu $ A $ a \v{c}\'{i}slo $ n $ definujme:
+\begin{description}
+\item[a] 
+\[ R,S \in Df(A,n) \Rightarrow R \cap S \in Df(A,n)  \]
+\item[b] 
+\[ R \in Df(A,n) \Rightarrow A^n-R \in Df(A,n)  \]
+\item[c] 
+\[ R \in Df(A,n+1) \Rightarrow Proj(A,R,n) \in Df(A,n)  \]
+\end{description}
+\label{lem:uzavr}
+\end{lemma}
+\begin{proof}
+~\\
+\begin{description}
+\item[ $ R \cap S $ ]
+~\\
+Nech\v{t} tedy m\v{e}jme n\v{e}jak\'{e} p\v{r}irozen\'{e} \v{c}\'{i}slo $n$, n\v{e}jakou mno\v{z}inu $A$ a n\v{e}jak\'{e }relace $R,S$ takov\'{e}, \v{z}e \[ R,S \in Df(A,n) .\]
+Z definice $ Df(A,n)$ plyne, \v{z}e existuje $k_1$ a $k_2 $, tak \v{z}e 
+\[ R \in Df^+(k_1,A,n)  \] 
+\[ S \in Df^+(k_2,A,n) .\]  
+Nech\v{t} tedy zvolme $ y $ tak, \v{z}e \[ y=max\{k_1,k_2\}. \] Pou\v{z}it\'{i}m definice  $ Df^+(x,A,n) $ dostaneme
+\[ R \cap S \in Df^*(y+1,A,n) .\] 
+Z toho tedy pak podle definice $Df(A,n)$ dostaneme
+\[ R \cap S \in Df(A,n) .\] 
+\item[$R^C$]
+~\\
+Nech\v{t} tedy m\v{e}jme n\v{e}jak\'{e} p\v{r}irozen\'{e} \v{c}\'{i}slo $n$, n\v{e}jakou mno\v{z}inu $A$ a relaci $R$ takovou, \v{z}e \[ R \in Df(A,n) .\]  
+Z definice $Df(A,n)$ plyne, \v{z}e existuje k takov\'{e}, \v{z}e 
+\[ R \in Df^+(k,A,n) .\]
+Pou\v{z}it\'{i}m definice  $ Df^+(x,A,n)$ dost\'{a}v\'{a}me 
+\[ A^n-R \in Df^+(k+1,A,n) .\] 
+Pak podle definice $Df(A,n)$ 
+\[ A^n-R \in Df(A,n)  .\]
+\item[Projekce]
+~\\
+Nech\v{t} tedy m\v{e}jme n\v{e}jak\'{e} p\v{r}irozen\'{e} \v{c}\'{i}slo $n$, n\v{e}jakou mno\v{z}inu $A$ a relaci $R$ takovou, \v{z}e \[ R \in Df(A,n) .\]  
+Z definice $ Df^+(A,n+1) $ plyne, \v{z}e existuje $ k $ takov\'{e}, \v{z}e 
+\[ R \in Df^+(k,A,n+1) .\]
+Pou\v{z}it\'{i}m definice  $ Df^+(x,A,n)$ dost\'{a}v\'{a}me 
+\[ Proj(A,R,n)\in Df^*(k+1,A,n) .\] 
+Z toho pak podle definice $Df(A,n)$ 
+\[ Proj(A,R,n) \in Df(A,n) .\]
+\end{description}
+\end{proof}
+\newpage
+Nyn\'{i} si nadefinujeme relativizaci formul\'{i} ve t\v{r}\'{i}d\v{e} $ \mathcal{M} $ , kter\'{a} odpov\'{i}d\'{a} platnosti formul\'{i} v $ \mathcal{M} $.
+\begin{definice}%\bfindex{Notace}
+\textbf{Relativizace \\}
+Nech\v{t} $ \mathcal{M} $ je t\v{r}\'{i}da, pak pro $ \phi $ definujme indukc\'{i} podle slo\v{z}itosti formule $ \phi^{ \mathcal{M}} $ jako relativizaci $ \phi $ v $ \mathcal{M} $\\
+\begin{enumerate}
+\item  $ (x=y)^{ \mathcal{M}}$ jako $ x=y,  $ 
+\item $ (x \in y)^{ \mathcal{M}}$ jako $ x \in y, $
+\item $ (\psi \wedge \lambda )^{ \mathcal{M}}$ jako  $\psi^{ \mathcal{M}}  \wedge  \lambda^{ \mathcal{M}}, $
+\item $ (\neg \psi)^{ \mathcal{M}}$ jako $\neg (\psi)^{ \mathcal{M}}$
+\item $(\exists \psi)^{ \mathcal{M}}$ jako $\exists x ( x \in \mathcal{M} \wedge (\psi)^{ \mathcal{M}}),$
+\end{enumerate}
+\label{def:relat}
+\end{definice} 
+
+Te\v{d} si uk\'{a}\v{z}eme \v{z}e, v $ Df(A,n) $ je ka\v{z}d\'{a} n-tice plat\'{i}c\'{i} v $ \mathcal{A} $.
+\begin{lemma}%\bfindex{Notace}
+~\\\label{lem:ntice}
+Nech\v{t} $ \phi(x_0,..,x_{n-1})  $ je formule s voln\'{y}mi prom\v{e}n\'{y} $ x_0,...,x_{n-1}$, pak 
+\[ \forall A [\{ \mathtt{s} \in A^n: \phi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)].   \]
+\end{lemma} 
+\begin{proof}~\\
+Indukc\'{i} podle slo\v{z}itosti formule s fixovan\'{y}m $A$.
+\begin{description}
+\item[$ x_i \in x_j $] ~\\
+Nech\v{t} $ \phi $ je atomick\'{a} formule $ x_i \in x_j $ pak z definice  $ Df(A,n) $
+\[ Diag_{\in}(A,n,i,j) \in Df(A,n), \]  
+z \v{c}eho\v{z} plyne 
+\[ [\{ \mathtt{s} \in A^n: \phi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] .\]
+Stejn\v{e} tak pro $ x_i = x_j $  z  
+\[ Diag_{=}(A,n,i,j) \in Df(A,n)  \] 
+plyne 
+\[ [\{ \mathtt{s} \in A^n: \phi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] .\]
+Nech\v{t} $ \phi $ je $ \psi \wedge \chi $ a v\'{i}me z induk\v{c}n\'{i}ho p\v{r}edpokladu, \v{z}e plat\'{i} 
+\[ [\{ \mathtt{s} \in A^n: \psi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)], \]
+\[ [\{ \mathtt{s} \in A^n: \chi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] ,\] 
+podle p\v{r}edchoz\'{i}ho lemma plat\'{i} 
+\[ [\{ \mathtt{s} \in A^n: \chi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \cap \]  \[\cap \{ \mathtt{s} \in A^n: \psi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)], \] 
+co\v{z} je p\v{r}esn\v{e}
+\[ [\{ \mathtt{s} \in A^n: (\chi \wedge \psi)^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] .\]  
+Nech\v{t} $ \phi $ je  $ \neg \psi $  a v\'{i}me z induk\v{c}n\'{i}ho p\v{r}edpokladu, \v{z}e plat\'{i} 
+\[ [\{ \mathtt{s} \in A^n: \psi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] .\] 
+Podle p\v{r}edchoz\'{i}ho lemma tedy plat\'{i} 
+\[ [A-\{ \mathtt{s} \in A^n: \psi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)], \] 
+co\v{z} je p\v{r}esn\v{e}
+\[ [\{ \mathtt{s} \in A^n: (\neg  \psi)^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)] .\] 
+Kone\v{c}n\v{e}  nech\v{t} $ \phi $ je  $ \exists y ~\psi $. \\ 
+Nech\v{t} $y$ nen\'{i} ani jedna z prom\v{e}nn\'{y}ch $ x_0,..,x_{n-1}$. \\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu \[ \{t \in A^{n-1}: \psi^\mathrm{A}(t(0),...t(n))\} \in  Df(A,n+1).\] 
+Tedy podle p\v{r}edchoz\'{i}ho lemma plat\'{i} 
+\[ Proj(A,\{t \in A^{n-1}: \psi^\mathrm{A}(t(0),...t(n))\},n) \in  Df(A,n),\] 
+co\v{z} je p\v{r}esn\v{e} 
+\[  \{ \mathtt{s} \in A^n: (\exists y ~\psi)^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} .\] 
+\end{description} 
+\end{proof}
+\newpage
+Te\v{d} si nadefinujeme k\'{o}dov\'{a}n\'{i} $ En(m,A,n) $, kter\'{e} v budoucnu vyu\v{z}ijeme  a proto si pro n\v{e}j dok\'{a}\v{z}eme i p\'{a}r vlastnost\'{i}.
+\\
+\begin{definice}%\bfindex{}
+~\\
+\label{def:En}
+Rekurz\'{i} p\v{r}es $ m \in \omega $. \\ $ En(m,A,n) $ je definov\'{a}na nasleduj\'{i}c\'{i}mi klauzulemi.: 
+\begin{itemize}
+\item Kdy\v{z} $ m=2^i*3^j $ a $ i,j < n $, tak $ En(m,A,n) = Diag_{\in}(A,n,i,j)$ . 
+\item Kdy\v{z} $ m=2^i*3^j*5 $ a $ i,j < n $, tak $ En(m,A,n) = Diag_{=}(A,n,i,j)$ . 
+\item Kdy\v{z} $ m=2^i*3^j*5^2 $, tak $ En(m,A,n) = A^n - En(i,A,n)$ . 
+\item Kdy\v{z} $ m=2^i*3^j*5^3 $, tak $ En(m,A,n) = E(i,A,n) \cap E(j,A,n)$ . 
+\item  Kdy\v{z} $ m=2^i*3^j*5^4 $, tak $ En(m,A,n) = Proj(A,E(i,A,n+1),n)$ . 
+\item Kdy\v{z} $ m $ nen\'{i} d\v{e}liteln\'{e} $ 6 $ nebo je d\v{e}litenln\'{e} $ 5^5 $, tak  $ En(m,A,n)= \emptyset $ .  
+\end{itemize}
+\end{definice}
+
+Uk\'{a}\v{z}eme si, \v{z}e pro ka\v{z}d\'{y} prvek $Df(A,n)$ m\'{a}me kodov\'{a}n\'{i} $ En(m,A,n) $.
+\begin{lemma}
+~\\
+\label{lem:enume}
+Pro libovoln\'{e} $ n $ a $A$, \[ Df(A,n)=\{En(m,A,n): m \in \omega \} .\]
+
+\end{lemma}
+\begin{proof}~\\
+M\v{e}jme $ A $ a $n$ fixovan\'{e}. Budeme dokazovat  
+\[ \forall m (En(m,A,n) \in Df(A,n))  .\] 
+Pou\v{z}ijeme faktorizaci \v{c}\'{i}sla $ m $.
+\begin{description}
+\item [$ m=2^i*3^j $ a $ i,j < n $:]~\\
+Z definice $En(m,A,n)$
+\[ \ En(m,A,n) = Diag_{\in}(A,n,i,j) .\]  
+Z definice $Df(A,n)$ plyne
+\[ Diag_{\in}(A,n,i,j) \in Df(A,n) .\]
+Z \v{c}eho\v{z} dostaneme
+\[ En(m,A,n)  \in Df(A,n) .\]
+\item [$ m=2^i*3^j $ a $ i,j < n $:]~\\
+Z definice $En(m,A,n)$ plyne
+\[ En(m,A,n) = Diag_{=}(A,n,i,j) .\] 
+Z definice  $Df(A,n)$ m\'{a}me
+\[ Diag_{=}(A,n,i,j) \in Df(A,n)  .\]
+Z \v{c}eho\v{z} m\'{a}me
+\[ En(m,A,n)  \in Df(A,n) .\]
+Nech\v{t} m\'{a}me tyto induk\v{c}n\'{i} p\v{r}edpoklady
+ \[ En(i,A,n) \in Df(A,n), \] 
+\[ En(j,A,n) \in Df(A,n), \]
+\[ En(i,A,n+1) \in Df(A,n+1). \]
+\item [$ m=2^i*3^j*5^2$:]~\\ 
+Z definice $ En(m,A,n) $
+\[  En(m,A,n) = A^n - En(i,A,n) . \] 
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu a lemma \ref{lem:uzavr} pro komplement  dostaneme
+\[ En(m,A,n) \in Df(A,n) .\]
+\item [$ m=2^i*3^j*5^3$:]~\\ 
+Z definice $En(m,A,n)$ dostaneme 
+\[ En(m,A,n) = E(i,A,n) \cap E(j,A,n) .\] 
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu a lemma \ref{lem:uzavr} pro pr\r{u}nik
+\[ En(m,A,n) \in Df(A,n) .\]
+\item [$ m=2^i*3^j*5^4:$]~\\ 
+Z definice $En(m,A,n)$
+\[ En(m,A,n) = Proj(A,E(i,A,n+1),n) .\] 
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu a lemma \ref{lem:uzavr} pro projekci 
+\[  En(m,A,n) \in Df(A,n) .\]
+ \end{description}
+Pokud je $ m $ je jin\'{e} ne\v{z} p\v{r}edchoz\'{i}, tak  
+\[ En(m,A,n)= \emptyset .\] 
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu a lemma \ref{lem:uzavr} pro komplement a pr\r{u}nik  
+ \[ En(m,A,n) \in Df(A,n) .\] \\
+Druh\'{y} sm\v{e}r \[ Df(A,n) \subset\{En(m,A,n): m \in \omega \} .\] 
+Nech\v{t} tedy \[  x \in  Df(A,n) .\] D\'{a}le p\v{r}edpokl\'{a}dejme, \v{z}e neexistuje $ m $ tak \v{z}e \[ x=En(m,A,n) .\]
+Z definice  $ Df(A,n) $ dostaneme, \v{z}e existuje n\v{e}jak\'{e} $ k $ tak\v{z}e 
+ \[  x \in  Df^+(k,A,n) .\] 
+Vezm\v{e}me takov\'{e} $ k $ nejmen\v{s}\'{i}.
+\begin{description}
+  \item[$ k=0 $] ~\\ 
+  Kdy\v{z} \[ x \in  Df^+(0,A,n), \] tak \[ x = Diag_{\in}(A,n,i,j) ,\] nebo \[ x = Diag_{=}(A,n,i,j) .\] 
+  Z definice \ref{def:En} tedy existuje $ m $, tak \v{z}e \[ x=En(m,A,n) .\]
+  \item[$ k \neq 0 $] ~\\
+   Kdy\v{z} \[ x \in  Df^+(k,A,n), \] tak x je dopln\v{e}k, pr\r{u}nik nebo projekce n\v{e}jak\'{e} mno\v{z}iny y tak, \v{z}e \[ y \in  Df^+(k-1,A,n), \]  ale pro tyto v\v{s}echny $ x $ podle definice  \ref{def:En} existuje $ m $, tak \v{z}e \[ x=En(m,A,n) .\]
+  \end{description}
+ \end{proof}
+\newpage
+Nyn\'{i} si dok\'{a}\v{z}eme, \v{z}e ka\v{z}d\'{a} definovateln\'{a} n-tice m\'{a} sv\r{u}j k\'{o}d $ En(m,A,n) $.
+\begin{lemma}
+Nech\v{t} $ \phi(x_0,...,x_{n-1}) $ je formule s voln\'{y}mi prom\v{e}nn\'{y}mi mezi $ x_0,...,x_{n-1} $, pak existuje n\v{e}jak\'{e} $ m $, takov\'{e} \v{z}e
+\[ \forall A [ \{ s \in A^n : \phi^A(s(0),...,s(n-1))\} = En(m,A,n)]  \]
+\end{lemma}
+\begin{proof}
+~\\
+Nech\v{t} m\'{a}me n\v{e}jak\'{e} $ n,A $ a n\v{e}jakou formuli $ \phi(x_0,...,x_{n-1}) $.\\  Z lemma \ref{lem:ntice} v\'{i}me, \v{z}e 
+\[ \forall A [\{ \mathtt{s} \in A^n: \phi^\mathrm{A} (\mathtt{s}(0),..,\mathtt{s}(n-1)\} \in Df(A,n)]  . \]
+Z lemma \ref{lem:enume} v\'{i}me 
+\[ \forall x (x \in Df(A,n) \rightarrow \exists m (x = En(m,A,n))) .\]  
+Co\v{z} n\'{a}m dohromady d\'{a}
+\[ \forall A [ \{ s \in A^n : \phi^A(s(0),...,s(n-1))\} = En(m,A,n)] ,\]
+jako p\v{r}\'{i}m\'{y} d\r{u}sledek dvou p\v{r}edchoz\'{i}ch lemmat.
+\end{proof}~\\~\\
+Zde budeme definovat konkatenaci dvou funkc\'{i}.
+\begin{definice}
+~\\
+Nech\v{t} s a t jsou funkce takov\'{e}, \v{z}e  \[ dom(s)=\alpha ,\]  \[ dom(t)=\beta ,\]  pak definujme funkci s\textasciicircum t, tak\v{z}e: 
+\[ dom(\text{s\textasciicircum t})=\alpha +\beta\]
+ \[ \text{s\textasciicircum t} \upharpoonright( \alpha )= s  \]
+\[  \text{s\textasciicircum t} (\alpha+\epsilon)=t(\epsilon) \text{  pro v\v{s}echny  } \epsilon < \beta  \]
+\end{definice}
+
+Nyn\'{i} kone\v{c}n\'{e} definujme mno\v{z}inu  definovaln\'{y}ch podmno\v{z}in $ A $ pomoc\'{i} formalizovan\'{e} relace spl\v{n}ov\'{a}n\'{i}. 
+\begin{definice}~
+\label{def:defi} 
+\begin{center}
+\[  \mathfrak{DP}(A)= \{ X \subset A: (\exists n \in \omega) (\exists \mathtt{s} \in A^n) (\exists R \in Df(A,n+1)   \]
+\[ X=\{ x \in A: \text{s\textasciicircum}  \langle x \rangle \in R \}  \}      \]
+\end{center}
+\end{definice}
+\newpage
+Doka\v{z}me si te\v{d}, \v{z}e v $ \mathfrak{DP}(A) $ jsou v\v{s}echny definovateln\'{e} podmno\v{z}iny $ A $.
+\begin{lemma}~\\
+\label{lem:def}
+Nech\v{t}  $ \phi(x_0,..,x_{m-1},y)  $ je formule s voln\'{y}mi prom\v{e}n\'{y} $ x_0,...,x_{m-1},y$, pak
+\[ \forall A \forall x_0,..,x_{m-1} [\{ y \in A: \phi^\mathrm{A} (x_0,..,x_{m-1},y)\} \in  \mathfrak{DP}(A)]. \]
+\end{lemma}
+\begin{proof}~\\
+Nech\v{t} tedy m\v{e}jme $  A,m $, $x_0,..,x_{m-1}$ a $ \phi$.\\ 
+Pak m\'{a}me \[ n=m, \]
+\[ \mathtt{s}=(x_0,..,x_{m-1}) .\] 
+Z lemma \ref{lem:ntice} v\'{i}me, \v{z}e pro ka\v{z}dou $  \phi^\mathrm{A} (x_0,..,x_{m-1},y)$ existuje $ R $, tak\v{z}e \[ R \in Df(A,m+1) .\]
+Z definice \ref{def:defi} m\'{a}me  \[ X \in \mathfrak{DP}(A),  \] tak\v{z}e
+\[ X = \{ y \in A: \phi^\mathrm{A} (x_0,..,x_{m-1},y)\}. \]
+\end{proof}~\\~\\
+Nyn\'{i} si dok\'{a}\v{z}eme p\'{a}r vlastnost\'{i} $ \mathfrak{DP} $. Za\v{c}neme s t\'{i}m, \v{z}e dok\'{a}\v{z}eme, \v{z}e $ \mathfrak{DP} $ je v\v{z}dy podmno\v{z}inou poten\v{c}n\'{i} mno\v{z}iny.
+\begin{lemma}
+\label{lem:cast}
+\[ \mathfrak{DP}(A) \subset P(A) \]
+\end{lemma}
+\begin{proof}~\\
+Plyne p\v{r}\'{i}mo z definice. \\
+ Nech\v{t} tedy  \[ x \in  \mathfrak{DP}(A) ,\]
+ z definice  $ \mathfrak{DP}(A) $ plyne \[ x \subset A ,\] a z definice $ P(A) $ plyne \[  x \in P(A) . \]
+ \end{proof}
+\newpage
+Doka\v{z}me si te\v{d}, \v{z}e pokud $ M $ je transitivn\'{i} mno\v{z}ina, tak ka\v{z}d\'{y} prvek mno\v{z}iny $ M $ je prvek v $ \mathfrak{DP}(A)$.
+\begin{lemma}
+~\\
+\label{lem:sub}
+Nech\v{t} M  je transitivn\'{i} mno\v{z}ina, pak \[  M \subset \mathfrak{DP}(M).  \]
+\end{lemma}
+\begin{proof}
+~\\
+Pou\v{z}ijeme lemma \ref{lem:def} na formuli $ y \in x  $
+\[ \forall x \in M (\{y \in M:y \in x\} \in \mathfrak{DP}(M)) .\]
+Vzhledem k tomu, \v{z}e $ M $  je transitivn\'{i}, tak 
+\[ (\forall x \in M)(y \in x \rightarrow y \in M) .\]
+Z toho plyne \v{z}e 
+\[ \{y \in M:y \in x\}=x ,\]
+z \v{c}eho\v{z} dostaneme
+\[ \forall x \in M (x \in \mathfrak{DP}(M)) .\]
+\end{proof}
+
+\newpage
+\subsection{Funkce}
+Nejd\v{r}\'{i}ve si definujme G\"{o}delovy operace. Operace ale mohou b\'{y}t pou\v{z}ity jin\'{e}.  V t\'{e}to pr\'{a}ci bylo \v{c}erp\'{a}no  z knihy \textit{T. Jech, Set theory}. Jinou definici  G\"{o}delov\'{y}ch operac\'{i} m\r{u}\v{z}eme naj\'{i}t t\v{r}eba v knize \textit{B.Balcar a P. \v{S}t\v{e}p\'{a}nek, Teorie mno\v{z}in}.
+\begin{definice}
+\textbf{G\"{o}delovy operace \\}
+\label{def:operace}
+\[ G_1(X,Y)=\{X,Y\}  \]
+\[ G_2(X,Y)= X \times  Y   \]
+\[ G_3(X,Y)=\epsilon(X,Y)=\{\langle u,v\rangle: u \in X \wedge  v \in Y \wedge  u \in v \}  \] 
+\[ G_4(X,Y)= X -  Y \] 
+\[ G_5(X,Y)= X \cap  Y  \] 
+\[  G_6(X)= \bigcup X \] 
+\[ G_7(X)= dom(X)  \]
+\[ G_8(X)= \{\langle u,v \rangle: \langle v,u \rangle \in X \}  \]
+\[ G_9(X)= \{\langle u,v,w \rangle: \langle u,w,v \rangle \in X \}  \]
+\[  G_{10}(X)= \{ \langle u,v,w \rangle: \langle v,w,u \rangle \in X \}  \]
+\end{definice}
+Te\v{d} si zadefinujme pojem z teorie vy\v{c}\'{i}slitelnosti, kter\'{y} vyu\v{z}ijeme tak\'{e} ve v\v{e}t\v{e} o vlastnostech  G\"{o}delov\'{y}ch operac\'{i}.
+\begin{definice}~\\
+Formule $\varphi(x_0,..,x_{n-1})$ je $\Delta_0$-formule teorie mno\v{z}in, pokud:
+\begin{itemize}
+  \item je atomick\'{a} formule,
+  \item kdy\v{z} $\varphi$ je $\phi \wedge \psi $ a $\psi$ a $\phi$ jsou $\Delta_0$-formule,
+  \item kdy\v{z} $\varphi$ je $\neg \phi $ a $\phi$ je $\Delta_0$-formule,
+  \item kdy\v{z} $\varphi$ je $(\exists x \in y) \phi$ a $\phi$ je $\Delta_0$-formule.
+\end{itemize}
+\end{definice}
+\newpage
+Uka\v{z}me si lemma, kter\'{e} vyu\v{z}ijeme ve v\v{e}t\v{e} o vlastnostech  G\"{o}delov\'{y}ch operac\'{i}.
+\begin{lemma}
+~\\
+\label{lem:for}
+Ozna\v{c}me $ u=(u_0,..,u_{n-1}) $, $  X=X_0 \times .. \times X_{n-1} $ a $ u_i \in X_i $ pro v\v{s}echna $ i $. Tak pro v\v{s}echny $ u \in X $ plat\'{i}
+\[ \varphi(u)  \Leftrightarrow (\exists x \in u_i) \psi(u,x) \]
+\[ \Leftrightarrow \exists x( x \in u_i \wedge \psi(u,x) \wedge x \in \bigcup X_i) \]
+\[\Leftrightarrow  u \in dom\{(u,x) \in X \times \bigcup X_i: \pi(u,x)\} .\]
+\end{lemma}
+Doka\v{z}me si v\v{e}tu, \v{z}e ke ka\v{z}d\'{e} $\Delta_0$-formuli existuje slo\v{z}en\'{i} G\"{o}delov\'{y}ch operac\'{i}, kter\'{e} definuje stejn\'{e} mno\v{z}iny.
+\begin{veta}
+~\\\label{vet:op}
+Nech\v{t} $\varphi(x_0,..,x_{n-1})$ je $\Delta_0$-formule, tak tu je G slo\v{z}en\'{e} z G\"{o}delov\'{y}ch operac\'{i}, tak\v{z}e pro v\v{s}echny $X_0,...,X_{n-1}$ 
+\[ G(X_0,...,X_{n-1})=\{(u_0,..u_{n-1}): u_0 \in X_0,..., u_{n-1} \in X_{n-1} \wedge \varphi(x_0,..,x_{n-1})\}  .\]   
+
+\end{veta}
+\begin{proof}
+~\\
+V\v{e}tu dok\'{a}\v{z}eme pomoc\'{i} indukce podle slo\v{z}itosti $\Delta_0$-formule. \\
+Nejd\v{r}\'{i}ve za\v{c}neme s d\r{u}kazem pro atomick\'{e} formule.\\
+Nech\v{t} $\varphi(x_0,..,x_{n-1})$ je atomick\'{a} formule tvaru $u_i \in u_j$, kde $i \neq j$.\\
+Provedeme d\r{u}kaz indukc\'{i} podle velikosti $ n $.
+\begin{description}
+\item[ $ n=1 $ :] ~\\
+Za\v{c}neme d\r{u}kazem pro uspo\v{r}\'{a}danou dvojici $ (u_0 , u_1) $.\\
+$\varphi$ m\r{u}\v{z}e m\'{i}t dva tvary  $ u_0 \in  u_1 $, nebo  $ u_1 \in  u_0 $.\\ 
+Za\v{c}n\v{e}me tvarem  $ u_0 \in  u_1 $. Pak hled\'{a}me $ G $, takov\'{e} \v{z}e
+\[  \{(u_0 , u_1) : u_0 \in  X_0 \wedge  u_1 \in  X_1 \wedge  u_0 \in  u_1 \}   .\]
+Kdy\v{z} nahl\'{e}dneme do seznamu G\"{o}delov\'{y}ch operac\'{i}, tak to odpov\'{i}d\'{a} funkci  
+\[ G_3(X,Y)=\epsilon(X,Y), \] 
+konkr\'{e}tn\v{e} tedy v druh\'{e}m p\v{r}\'{i}pad\v{e}, pro formuli tvaru $ u_1 \in  u_0 $, hled\'{a}me $ G $ pro 
+\[  \{(u_1 , u_2) : u_1 \in  X_1 \wedge  u_2 \in  X_2 \wedge  u_2 \in  u_1 \} .\]  
+Mezi G\"{o}delov\'{y}mi operacemi je funkce 
+\[  G_8(X)= \{(u,v): (v,u) \in X \}  .\]
+M\r{u}\v{z}eme tedy mno\v{z}inu definovat takto 
+\[ \{(u_0 , u_1) : u_0 \in  X_0 \wedge  u_1 \in  X_1 \wedge  u_1 \in  u_0 \}=G_8(\epsilon(X_0,X_1)) .\]
+ \item[$ n > 1 \wedge  i\neq  n-1 \wedge j \neq  n-1 $:]~\\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\'{a}me
+\[ \{(u_0 ,..., u_{n-2} ): u_0 \in  X_0,..., u_{n-2}  \in  X_{n-2}  \wedge  u_i \in  u_j \}=G(X_0,...X_{n-2})  . \]
+Lze  nahl\'{e}dnout, \v{z}e \begin{center}
+$\{(u_0 ,..., u_{n-1}) : u_0 \in  X_0,...,u_{n-1}  \in  X_{n-1}  \wedge  u_i \in  u_j \}=$ $=G(X_0,...X_{n-2}) \times X_{n-1},$
+\end{center}
+co\v{z} odpov\'{i}d\'{a}
+\[ G_2(X,Y)= X \times  Y .\]
+Konr\'{e}tn\v{e} tedy m\'{a}me
+\begin{center}
+$ \{(u_0 ,..., u_{n-1}) : u_0 \in  X_0,..., u_{n-1}  \in  X_{n-1}  \wedge  u_i \in  u_j \}\}=$ $=G_2(G(X_0,...X_{n-2}),X_{n-1}) $.
+\end{center}
+ \item[$ n > 1 \wedge  i\neq  n-2 \wedge j \neq  n-2 $:]~\\
+V\v{e}t\v{s}ina p\v{r}\'{i}pad\r{u} byla vy\v{r}e\v{s}ena v p\v{r}edchoz\'{i} podm\'{i}nce. Ty nevy\v{r}e\v{s}en\'{e} se daj\'{i} p\v{r}ev\'{e}st na tento p\v{r}\'{i}pad. \\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\v{e}jme
+ \begin{center}
+ $ \{(u_0 ,...,u_{n-3},u_{n-1}, u_{n-2} ): u_0 \in  X_0,...,  u_{n-1}  \in  X_{n-1}  \wedge  u_i \in  u_j \}= $ $ =G(X_1,...X_{n})  $
+ \end{center} 
+Uz\'{a}vorkujeme 
+\[ (u_0 ,...,u_{n-3},u_{n-1}, u_{n-2})= ((u_0 ,...,u_{n-3}),u_{n-1}, u_{n-2}) .\]
+Nyn\'{i} lze nahl\'{e}dnout, \v{z}e\begin{center}
+  $\{(u_0 ,..., u_{n-1}) : u_0 \in  X_0,...,u_{n-1}  \in  X_{n-1} \wedge  u_i \in  u_j \}=$ $=G_9((u_0 ,...,u_{n-3}),u_{n-1}, u_{n-2}) $.
+ \end{center}
+Konkr\'{e}tn\v{e} tedy m\'{a}me
+\begin{center}
+$ \{(u_0 ,..., u_{n-1}) : u_0 \in  X_0,...,u_{n-1}  \in  X_{n-1}  \wedge  u_i \in  u_j \}=$ $=G_9(G(X_0,...X_{n-1})) $.
+\end{center}
+\item[$ n > 1 \wedge i= n-2 \wedge j = n-1 $ :]~\\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\v{e}jme
+\begin{center}
+$ \{(u_0 ,..., u_{n-3}) : u_0 \in  X_0,...,u_{n-3}  \in  X_{n-3}\}= G(X_0,..,X_{n-3})$ \\
+$ \{(u_{n-2} , u_{n-1}) : u_{n-2} \in  X_{n-2} \wedge  u_{n-1} \in  X_{n-1} \wedge  u_{n-2} \in  u_{n-1} \}=$ $=\epsilon(X_{n-2},X_{n-1})$ 
+\end{center}
+Na\v{s}\'{i} hledanou $ (u_0 ,..., u_{n-1}) $ tedy dostaneme jako
+\begin{center}
+  $\{(u_0 ,..., u_{n-1}) : u_0 \in  X_0,...,u_{n-1}  \in  X_{n-1} \wedge  u_{n-2} \in  u_{n-1}  \} = $ 
+$=G_2(G(X_0,..,X_{n-3}),\epsilon(X_{n-2},X_{n-1}))$
+ \end{center}
+\item[$ n > 1 \wedge i= n-1 \wedge j = n-2 $ :]~\\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\v{e}jme
+\begin{center}
+$ \{(u_0 ,..., u_{n-3}) : u_0 \in  X_0,...,u_{n-3}  \in  X_{n-3}\}= G(X_0,..,X_{n-3})$ \\
+$ \{(u_{n-2} , u_{n-1}) : u_{n-2} \in  X_{n-2} \wedge  u_{n-1} \in  X_{n-1} \wedge  u_{n-1} \in  u_{n-2} \}=$ $=G_8(\epsilon(X_{n-2},X_{n-1}))$ 
+\end{center}
+Na\v{s}\'{i} hledanou $ (u_0 ,..., u_{n-1}) $ tedy dostaneme jako
+\begin{center}
+  $\{(u_0 ,.. ., u_{n-1}) : u_0 \in  X_0,..., u_{n-1}  \in  X_{n-1} \wedge  u_{n-1} \in  u_{n-2}  \} = $ 
+$=G_2(G(X_0,.., X_{n-3}),G_8(\epsilon(X_{n-2},X_{n-1})))$.
+ \end{center}
+\end{description}
+M\'{a}me tedy dok\'{a}z\'{a}no pro atomick\'{e} formule a proto m\v{e}jme tedy induk\v{c}n\'{i} p\v{r}edpoklady pro $  \phi(x_0,..,x_{n-1}) $ a $ \psi(x_0,..,x_{n-1}) $.
+\begin{description}
+\item[ $\varphi(x_0,.., x_{n-1})\leftrightarrow \neg \psi(x_0,.., x_{n-1})$:]~\\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\'{a}me
+\begin{center}
+$\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1}  \}=G(X_{0},..,X_{n-1})$,
+$\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1} \wedge \psi(x_0,..,x_{n-1})  \}=$ $=G^{'}(X_{0},..,X_{n-1})$. 
+\end{center}
+Pomoc\'{i} toho si vyj\'{a}d\v{r}\'{i}me  $\varphi(x_0,..,x_{n-1})$ jako
+\begin{center}
+$\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1} \wedge \varphi(x_0,..,x_{n-1})  \}=$ $=G(X_{0},..,X_{n-1}) - G^{'}(X_{0},..,X_{n-1}) = $ \\$=G_4(G(X_{0},..,X_{n-1}),G^{'}(X_{0},..,X_{n-1})) $
+\end{center}
+\newpage
+\item[$ \varphi(x_0,.., x_{n-1})\leftrightarrow \psi(x_0,..,x_{n-1}) \wedge \phi(x_0,..,x_{n-1})$:]~\\
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\'{a}me
+\begin{center}
+$\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1} \wedge \phi(x_0,..,x_{n-1})  \}=$ $=G(X_{0},..,X_{n-1})$,
+$\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1} \wedge \psi(x_0,..,x_{n-1})  \}=$ $=G^{'}(X_{0},...,X_{n-1})$.
+\end{center}
+Pomoc\'{i} toho si vyj\'{a}d\v{r}\'{i}me  $\varphi(x_0,..,x_{n-1})$
+ \begin{center}
+ $\{(u_{0},..., u_{n-1}) : u_{0} \in  X_{0},...,  u_{n-1} \in  X_{n-1} \wedge \varphi(x_0,..,x_{n-1})   \}=$ $=G(X_{0},..,X_{n-1}) \cap G^{'}(X_{0},..,X_{n-1})=G_5(G(X_0,..,X_{n-1}),G^{'}(X_{0},..,X_{n-1})) .$
+ \end{center}
+\item[$\varphi(x_0,.., x_{n-1})\leftrightarrow(\exists u_{n} \in u_i) \psi(x_0,..,x_{n})$:].~\\
+Pak vezm\v{e}me formuli $  \phi(x_0,.., x_{n})  $ ve tvaru $ \psi(x_0,..,x_{n}) \wedge u_{n} \in u_i $. \\
+Podle induk\v{c}n\'{i} p\v{r}edpokladu existuje $ G $ tak, \v{z}e 
+\begin{center}
+  $\{(u_{0} ,..., u_{n}) : u_{0} \in  X_{0} ,..., u_{n} \in  X_{n} \wedge \phi(x_0,...,x_{n})  \}=G(X_{0},...,X_{n})$
+ \end{center} 
+ pro v\v{s}echny $ X_{0},...,X_{n} $. Vyu\v{z}it\'{i}m lemma \ref{lem:for} dostaneme
+\begin{center}
+$ \{(u_{0} ,..., u_{n-1}) : u_{0} \in  X_{0} , ... , u_{n-1} \in  X_{n-1} \wedge \psi(x_0,...,x_{n-1})  \}=$ $=G_7(G(X_{0},..,X_{n-1}, G_6(X_i)))  $
+\end{center}
+\end{description}  
+\end{proof}
+
+Uka\v{z}me si, \v{z}e v\v{s}echny G\"{o}delovy operace jsou $\Delta_0$-formule. V tomto lemma pou\v{z}ijeme pro uleh\v{c}en\'{i} v\v{s}echny t\v{r}i z\'{a}kladn\'{i} spojky a oba uzav\v{r}en\'{e} kvantifik\'{a}tory. Samoz\v{r}ejme bychom mohli pou\v{z}\'{i}t jen p\v{r}edpokl\'{a}danou sadu, ale zeslo\v{z}ilo by to z\'{a}pis. 
+\begin{lemma}
+~\\
+\label{lem:in}
+G\"{o}delovy operace jsou $\Delta_0$-formule.
+\end{lemma}
+\begin{proof}
+~\\D\r{u}kazy provedeme, tak \v{z}e najdeme ekvivalentn\'{i} $\Delta_0$-formule.
+\begin{description}
+
+\item[\textit{$G_1(X,Y)=Z$:}] 
+\[ ( Z=\{X,Y\}) \Leftrightarrow ( X \in Z \wedge  Y \in Z \wedge (\forall a \in Z)(a=X \vee a=Y))   \]
+\item[\textit{ $G_2(X,Y)=Z$:}]
+~\\
+Nejd\v{r}\'{i}ve si dok\'{a}\v{z}eme, \v{z}e formule $  A= \langle B,C  \rangle $ je  $\Delta_0$-formule \\
+~\\
+$ A= \langle B,C  \rangle )\Leftrightarrow (((\forall a \in A)(a = \{B\} ~ \vee ~ a = \{B,C\})) \wedge $  
+\[  \wedge ((\exists a \in A)(\exists d \in A)(a=\{B\} \wedge d=\{B,C\}) . \] 
+Te\v{d} p\v{r}ejdem k d\r{u}kazu samotn\'{e}ho $ Z=X \times  Y $. \\
+~\\
+$ (Z=X \times  Y) \Leftrightarrow ( ((\forall z \in Z) (\exists x \in X)  (\exists y \in Y)  z= \langle  x,y \rangle ) \wedge $ 
+\[  \wedge ((\forall x \in X) (\forall y \in Y)  (\exists z \in Z) z= \langle x,y \rangle ) )  \]
+\item[$ G_3(X,Y)= Z $:]
+\[   (Z=\epsilon(X,Y)) \Leftrightarrow (((\forall z \in Z) (\exists x \in X)  (\exists y \in Y) ( z= \langle x,y \rangle \wedge x \in y)) \wedge \] 
+\[  \wedge ((\forall x \in X) (\forall y \in Y) (\exists z \in Z) ( x \in y \rightarrow  z= \langle  x,y \rangle)))  \]
+\item[$ G_4(X,Y)= Z $:] 
+\[ (Z=X -Y ) \Leftrightarrow  \]\[\Leftrightarrow (((\forall z \in Z) (z \in X \wedge z \notin Y)) \wedge ((\forall x \in X) (x \notin Y \rightarrow x \in Z)))  \]
+\item[$ G_5(X,Y)= Z $:]
+ \[  (Z=X \cap Y ) \Leftrightarrow \]\[\Leftrightarrow(((\forall z \in Z) (z \in X \wedge z \in Y)) \wedge ((\forall x \in X) (x \in Y \rightarrow x \in Z))) \]  
+\item[$ G_6(X)= Z $:] 
+\[  (Z=\bigcup X ) \Leftrightarrow\] \[\Leftrightarrow (((\forall z \in Z)(\exists x \in X) z \in x) \wedge ((\forall x \in X) (\forall z \in x)(z \in Z)))  \] 
+\item[$ G_7(X)= Z $:]
+~\\
+Nejd\v{r}\'{i}ve si dok\'{a}\v{z}eme, \v{z}e formule $  z \in dom(X) $ je  $\Delta_0$-formule
+\[ (z \in dom(X)) \Leftrightarrow ((\exists x \in X)(\exists u \in x)(\exists y \in u)\langle z ,y \rangle  = x) .\]
+Pokra\v{c}ujme, pokud $  \phi $ je  $\Delta_0$-formule pak  i $ ((\forall y \in dom(X))\phi) $ bude $\Delta_0$-formule tvaru
+\[ (\forall z \in dom(X)\phi) \Leftrightarrow  ((\forall x \in X)(\forall Y \in x)(\forall z,y \in Y)(\langle z,y  \rangle  = x \rightarrow \phi  )) . \]
+Te\v{d} si kone\v{c}n\v{e} dok\'{a}\v{z}eme $ Z=dom(X) $ takto
+ \[  (Z=dom(X) ) \Leftrightarrow (((\forall z \in Z) z \in dom(X))\wedge ((\forall z \in dom(X)) z\in Z)).\]
+\item[$ G_8(X)= Z $:] 
+\[(Z = \{\langle u,v \rangle: \langle v,u \rangle \in X \} )  \Leftrightarrow \] \[ \Leftrightarrow ((\forall z \in Z) (\exists x \in X)(z=\langle u,v \rangle \rightarrow x=\langle v,u \rangle) \wedge\] \[ \wedge(\forall x \in X) (\exists z \in Z)(x=\langle u,v \rangle \rightarrow z=\langle v,u \rangle)) \]
+ \item[ $ G_9(X)= Z $:]
+ ~\\
+Nejd\v{r}\'{i}ve si dok\'{a}\v{z}eme, \v{z}e formule $ a \in  \langle x,y,z \rangle $ je  $\Delta_0$ formule \\
+\[  (a \in  \langle x,y,z \rangle )\Leftrightarrow (a=\{x,\langle z,y \rangle\} \vee a= \{x\})  \] 
+To pou\v{z}ijeme k d\r{u}kazu, \v{z}e $ A=\langle x,y,z \rangle   $ je  $\Delta_0$ formule
+\[ (A=\langle x,y,z \rangle ) \Leftrightarrow ((\forall a \in A)  (a \in  \langle x,y,z \rangle ) \wedge \{x,\langle y,z \rangle\} \in A \wedge \{x\} \in A)\]
+co\v{z} pou\v{z}ijem k d\r{u}kazu, \v{z}e $ \langle x,y,z \rangle \in A $ je  $\Delta_0$ formule.
+\[ (\langle x,y,z \rangle \in A)  \Leftrightarrow ((\exists a \in A) a= \langle x,y,z \rangle ) \]
+
+a kone\v{c}n\v{e} pomoc\'{i} toho dok\'{a}\v{z}eme,\v{z}e  $  (Z = \{\langle u,v,w \rangle: \langle u,w,v \rangle \in X \} )$ \\
+ \[ (Z = \{\langle u,v,w \rangle: \langle v,w,u \rangle \in X \} ) \Leftrightarrow  \]  \[  \Leftrightarrow  (((\forall z \in Z)(\exists x \in X)(z=\langle u,v,w \rangle \rightarrow x= \langle v,w,u \rangle)) \wedge  \] \[ \wedge  ((\forall x \in X)(\exists z \in Z)( x= \langle v,w,u \rangle \rightarrow z=\langle u,v,w \rangle))). \] 
+\item[$ G_{10}(X)= Z $:] 
+ \[ (Z = \{\langle u,v,w \rangle: \langle u,w,v \rangle \in X \} ) \Leftrightarrow  \]  \[  \Leftrightarrow  (((\forall z \in Z)(\exists x \in X)(z=\langle u,v,w \rangle \rightarrow x= \langle u,w,v \rangle)) \wedge  \] \[ \wedge  ((\forall x \in X)(\exists z \in Z)( x= \langle u,w,v \rangle \rightarrow z=\langle u,v,w \rangle))) .\] 
+\end{description}
+\end{proof}
+\begin{definice}
+~\\
+\v{R}\'{i}kame, \v{z}e t\v{r}\'{i}da $ \textsf{T} $ je uzav\v{r}en\'{a} na operaci $ \textsl{F}  $ :\\ 
+kdy\v{z} $ \textsl{F}(x_1,...,x_n) \in \textsf{T}  $ kdykoliv kdy\v{z} $x_1,...,x_n \in \textsf{T}  $
+\end{definice}
+\newpage
+Te\v{d} si definujme uz\'{a}v\v{e}r na G\"{o}delovy operace $ \mathfrak{D}(A) $ mno\v{z}iny $ A $ .
+\begin{definice}
+~\\
+\label{def:obal}
+Rekurz\'{i} p\v{r}es $ n < \omega $ definujme:
+\[ X_0=A,  \]
+\[ X^*_{n}=\{x:(\exists y,z \in X_n)(x=G_1(z,y) \vee .. \vee x=G_{10}(z))\},  \]
+\[ X_{n+1}= X_n \cup X^*_{n}  , \]
+pak definujme uz\'{a}v\v{e}r $ \mathfrak{D}(A)$ takto
+\[ \mathfrak{D}(A)=\bigcup_{j < \omega}   X_j .\]
+\end{definice}  
+Doka\v{z}me si, \v{z}e ke ka\v{z}d\'{e} mno\v{z}in\v{e} z uz\'{a}v\v{e}ru existuje $\Delta_0$-formule, kter\'{a} ji definuje.  
+\begin{lemma}
+~\\
+Metamatematickou indukc\'{i} sestroj\'{i}me $\Delta_0$-formule pro $ X_n $: \\
+Definujme pro $ n=0 $
+\[ (X_0=Y) \Leftrightarrow ((\forall y \in Y)( y\in X_0) \wedge  (\forall y \in X_0)( y\in Y)). \]
+Nech\v{t} tedy m\'{a}me $\Delta_0$-formuli pro $ y \in X_{n}  $ z toho pak pro n\'{a}sledn\'{i}ka definujme
+\[ (x \in X^*_n) \Leftrightarrow ((\exists y \in X_{n}) (\exists z \in X_{n})(x=G_1(z,y) \vee .. \vee x=G_{10}(z)), \]
+\[ x \in (X_{n+1}) \Leftrightarrow ((\exists y \in X_{n}) y=x) \vee ((\exists y \in X^*_n) x=y)) . \]
+\label{lem:abs}
+\end{lemma}
+\begin{lemma}
+~\\
+Nech\v{t} $ A $ je transitivn\'{i} mno\v{z}ina a m\v{e}jme formuli $ \phi $, pak ka\v{z}d\'{a} relativizace formule $ \phi^\mathrm{A} $ je $\Delta_0$-formule.
+\label{lem:reldel}
+\end{lemma}
+\begin{proof}~\\
+Jedin\'{y} tvar formule, kdy $  \phi(x_0,..x_{n-1}) $ nen\'{i} $\Delta_0$-formule, je kdy\v{z} n\v{e}jak\'{a} podformule je tvaru $\exists y \varphi$. Relativizace formule $  \phi(x_0,..x_{n-1}) $ na $ \phi^\mathrm{A}(x_0,..x_{n-1}) $ znamen\'{a} p\v{r}eps\'{a}n\'{i} podformule na $(\exists y\in A)  \varphi$ a tedy se stane tak\'{e} $\Delta_0$-formul\'{i}. Ostatn\'{i} tvary formule jsou $\Delta_0$-formule podle definice.
+\end{proof}
+\newpage
+Definujme si pojem absolutn\'{i} formule a dok\'{a}\v{z}eme si lemma o jejich vlastnostech v transitivn\'{i}m modelu.
+\begin{definice}
+~\\
+Formule spl\v{n}uj\'{i}c\'{i} n\'{a}sleduj\'{i}c\'{i} lemma se naz\'{y}v\'{a} absolutn\'{i} v\r{u}\v{c}i tranzitivn\'{i}mu modelu $  \textsf{M} $.
+\end{definice} 
+V lemma si dok\'{a}\v{z}eme, \v{z}e ka\v{z}d\'{a} relativizovan\'{a} formule v transitivn\'{i} t\v{r}\'{i}d\v{e} je $\Delta_0$-formule.
+\begin{lemma}
+~\\\label{lem:transa}
+Kdy\v{z} $  \textsf{M} $ je tranzitivn\'{i} t\v{r}\'{i}da a $\phi$ je $\Delta_0$ formule, tak pro v\v{s}echny $ x_0,...,x_{n-1} $: 
+ \[ (\psi^{M}(x_0,..,x_{n-1})) \Leftrightarrow (\psi(x_0,..,x_{n-1})) \]
+
+\end{lemma}
+\begin{proof}
+~\\
+Indukc\'{i} podle slo\v{z}itosti formule:\begin{description}
+\item[$x=y$:]
+~\\
+Podle definice \ref{def:relat} je \[ (x=y)^{M} \Leftrightarrow x=y  .\]
+\item[$x \in y: $]
+~\\
+Podle definice \ref{def:relat} je \[ (x\in y)^{M} \Leftrightarrow x\in y .\]
+\end{description}
+Nech\v{t} tedy m\'{a}me induk\v{c}n\'{i} p\v{r}edpoklad   \[ \phi^{M} \Leftrightarrow \phi \]    \[ \pi^{M} \Leftrightarrow \pi \]  
+\begin{description}
+\item[$\phi \wedge \pi: $] ~\\
+Podle definice \ref{def:relat} je 
+\[ (\phi \wedge \pi)^{M} \Leftrightarrow \phi^{M}\wedge \pi^{M}  ,\] 
+a z induk\v{c}n\'{i}ho p\v{r}edpokladu dost\'{a}v\'{a}me
+\[ \phi^{M}\wedge \pi^{M} \Leftrightarrow (\phi \wedge \pi) .\]
+Dohromady tedy \[ (\phi \wedge \pi)^{M} \Leftrightarrow  (\phi \wedge \pi) .\] 
+\item[$\neg \phi: $]~\\
+Podle definice \ref{def:relat} je 
+\[ (\neg \phi)^{M} \Leftrightarrow \neg (\phi^{M})  \] 
+a z induk\v{c}n\'{i}ho p\v{r}edpokladu dostaneme
+\[ \neg (\phi^{M})  \Leftrightarrow \neg \phi .\]
+Dohromady tedy \[ (\neg \phi )^{M} \Leftrightarrow  (\neg \phi ) .\] 
+\item[$(\exists u\in x)\phi(u,x,...): $]~ \\
+Podle definice \ref{def:relat} je 
+\[  (\exists u(u\in x \wedge \phi))^{M} \Leftrightarrow ((\exists u \in M) (u\in x \wedge \phi^{M})) \]
+a z induk\v{c}n\'{i}ho p\v{r}edpokladu a transitivity $ M $
+\[ (\exists u \in M) (u\in x \wedge \phi^{M})) \Leftrightarrow (\exists u \in  x) \wedge \phi))  .\]
+\end{description}\end{proof}
+
+Te\v{d} kdy\v{z} se kouknem na p\v{r}edchoz\'{i} lemmata m\'{a}me materi\'{a}l pro toho, abychom zapsali ka\v{z}d\'{y} prvek uz\'{a}v\v{e}ru jako $\Delta_0$-formuli. 
+
+Te\v{d} u\v{z} m\'{a}me dostatek materi\'{a}lu proto abychom srovnali oba p\v{r}istupy tvorby $ \mathfrak{DP} $
+
+\begin{veta}
+~\\
+\label{vet:rovno}
+Nech\'{t} A je tranzitivn\'{i} mno\v{z}ina
+\[ \mathfrak{DP}(A)= \mathfrak{D}(A \cup \{A\} ) \cap P(A) \]
+\end{veta}
+\begin{proof}~\\
+Nech\v{t} m\'{a}me n\v{e}jak\'{e} 
+\[ x \in \mathfrak{D}(A \cup \{A\} ) \cap P(A) .\]  
+Podle lemma \ref{lem:abs} m\'{a}me z \[ x \in \mathfrak{D}(A \cup \{A\} ) \]  $\Delta_0$-formuli tvaru 
+\[ x=G(X_0,..,X_{n-1}) .\] 
+Podle lemma \ref{lem:in} je to $\Delta_0$-formule  \[ \phi (y_0,..,y_{m},z) , \] kter\'{a} definuje prvky $ x $. Podle lemma \ref{lem:transa} m\'{a}me  \[ \phi^\mathrm{A} (y_0,..,y_{m},z) \]  a podle lemma \ref{lem:def} a p\v{r}edpokladu $ x \in P(A) $ m\'{a}me mno\v{z}inu \[ x=\{z \in A: \phi^\mathrm{A} (y_0,..,y_{m},z)\} \in \mathfrak{DP}(A) .\]
+T\'{i}m jsme dok\'{a}zali \[ \mathfrak{D}(A \cup \{A\} ) \cap P(A) \subset \mathfrak{DP}(A) .\]
+Ted si dok\'{a}\v{z}eme druhou inkluzi.
+Nech\v{t} m\'{a}me n\v{e}jak\'{e} 
+\[ x \in \mathfrak{DP}(A) .\] 
+Z definice \ref{def:defi} v\'{i}me, \v{z}e 
+\[  x \in P(A) .\]
+Te\v{d} si mus\'{i}me dok\'{a}zat u\v{z} jen 
+\[  x \in \mathfrak{D}(A \cup \{A\} ) .\]
+Nech\v{t} tedy m\'{a}me n\v{e}jak\'{e} 
+\[ x \in \mathfrak{DP}(A), \] 
+takov\'{e} \v{z}e 
+\[ x=\{z \in A:\phi^\mathrm{A} (y_0,..,y_{m},z)\} .\]
+Podle lemma \ref{lem:reldel} je $\phi^\mathrm{A}$ $\Delta_0$-formule, co\v{z} podle v\v{e}ty \ref{vet:op} znamen\'{a}, \v{z}e existuje $ G(A,{y_0},..,{y_m}) $ takov\'{e}, \v{z}e
+\[ G(A,{y_0},..,{y_m})=x .\]
+Z \v{c}eho\v{z} plyne, \v{z}e existuje $ X_n $ takov\'{e}, \v{z}e
+\[ x \in X_n .\]
+Z definice $ \mathfrak{D}(A\cup \{A\}) $ pak plyne
+\[ x \in \mathfrak{D}(A\cup \{A\}) .\]
+T\'{i}mto jsme dok\'{a}zali 
+\[ \mathfrak{D}(A\cup \{A\})= \mathfrak{DP}(A) .\]
+\end{proof}~\\
+V t\'{e}to kapitole jsme tedy d\'{i}ky v\v{e}t\v{e} \ref{vet:rovno} dok\'{a}zali, \v{z}e oba p\v{r}\'{i}pady konstrukce univerza $ \mathbb{L} $ budou aspo\v{n} z pohledu v\'{y}sledku stejn\'{e}. \v{C}\'{i}m se tyto konstrukce li\v{s}\'{i}, je p\v{r}\'{i}stup ke konstrukci $ \mathbb{L} $. Prvn\'{i} p\v{r}\'{i}stup vy\v{z}aduje prost\v{r}edky matematick\'{e} logiky a na $ \mathbb{L} $ nahl\'{i}\v{z}\'{i}me metamatematicky jako na model teorie mno\v{z}in. Vyu\v{z}ili jsme k tomu formalizace relace spl\v{n}ov\'{a}n\'{i}. Druh\'{y} p\v{r}\'{i}stup studuje $ \mathbb{L} $ matematicky jako speci\'{a}ln\'{i} t\v{r}\'{i}du definovatelnou v teorii mno\v{z}in. Vyu\v{z}\'{i}v\'{a}me takzvan\'{e} sch\'{e}ma $\Delta_0$-vyd\v{e}len\'{i}, kter\'{e} odpov\'{i}d\'{a} sch\'{e}ma vyd\v{e}len\'{i} aplikovan\'{e}ho na $\Delta_0$-formule.
+\section{Universum $ \mathbb{L} $}
+\subsection{Z\'{a}kladn\'{i} vlasnosti $ \mathbb{L} $}
+D\'{i}ky v\v{e}t\v{e} \ref{vet:rovno} tedy m\r{u}\v{z}em definice ztoto\v{z}nit.  
+Nejd\v{r}\'{i}ve si tedy pou\v{z}it\'{i}m transfinitn\'{i} indukce zkonstruujeme samotn\'{e} universum $ \mathbb{L} $.
+\begin{definice}~\\
+Transfinitn\'{i} indukc\'{i} definujme
+\begin{description}
+\item[$ \alpha=\emptyset $:] 
+\[ L_\alpha=\varnothing , \]
+\item[$ \alpha=\beta+1 $:] 
+\[ L_{\alpha}=\mathfrak{DP}(L_\beta), \]
+\item[$ \alpha  $ je  limitn\'{i} ordin\'{a}l:]
+\[ L_{\alpha }=\bigcup_{\beta< \alpha} L_\beta . \] 
+\end{description}
+T\'{i}mto jsme zkonstruovali $ L_{\alpha } $ pro ka\v{z}d\'{e} $ \alpha \in \textit{On} $. \\ Te\v{d} pomoc\'{i} $ L_{\alpha } $ zkonstruujeme $ \mathbb{L} $ \[ \mathbb{L}=\bigcup_{\alpha \in \textit{On}} L_\alpha.\]
+\end{definice}
+Doka\v{z}me si, \v{z}e $ \mathbb{L} $ je podmno\v{z}inou $\mathbb{WF}$.
+\begin{lemma}
+\label{lem:subwf}
+\[ \mathbb{L} \subset \mathbb{WF} \]
+\end{lemma}
+\begin{proof}~\\
+Nejd\v{r}\'{i}ve indukc\'{i} pro ka\v{z}d\'{e} $ \alpha \in  \textit{On}$ dok\'{a}\v{z}eme, \v{z}e plat\'{i} \[ L_\alpha \subset R_\alpha \]
+\begin{description}
+\item[$ \alpha=\emptyset $:]~\\
+Z definice $ L_\alpha $ dostaneme
+\[ L_\alpha=\varnothing  .\] 
+Z definice $ R_\alpha $ dostaneme
+\[ R_\alpha=\varnothing . \]
+Co\v{z} n\'{a}m tedy d\'{a}v\'{a} \[ R_\alpha=L_\alpha .\]
+\item[$ \alpha=\beta+1 $:]~\\
+Z definice $ L_\alpha $ dostaneme 
+\[ L_{\alpha}=\mathfrak{DP}(L_\beta). \]
+Z definice $ R_\alpha $ dostaneme
+\[ R_{\alpha}=P(L_\beta) .\]
+Podle lemma \ref{lem:cast} m\'{a}me pro ka\v{z}d\'{e} $ \alpha=\beta+1 $
+\[ L_\alpha \subset R_\alpha .\]
+\item[$ \alpha  $ je limitn\'{i} ordin\'{a}l:]~\\
+Nech\v{t} tedy m\v{e}jme 
+\[ x \in L_\alpha .\]
+Z definice $ L_\alpha  $ plyne, \v{z}e existuje ordin\'{a}l $ \beta < \alpha $ takov\'{y}, \v{z}e 
+ \[ x \in L_\beta .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu dostaneme
+ \[ x \in R_\beta .\]
+Z definice $ R_\alpha $ dost\'{a}v\'{a}me 
+\[ x \in R_\alpha .\]
+Tak\v{z}e i pro limitn\'{i} ordin\'{a}l $ \alpha $ dost\'{a}v\'{a}me tak\'{e}
+\[ L_\alpha \subset R_\alpha .\]
+\end{description}
+D\r{u}kaz pro $ \mathbb{L} $ a $ \mathbb{WF} $ je prakticky identick\'{y} jako d\r{u}kaz pro  limitn\'{i} ordin\'{a}l
+Nech\v{t} tedy 
+\[ x \in \mathbb{L} .\]
+Z definice $ \mathbb{L} $ plyne, \v{z}e existuje ordin\'{a}l $ \beta $ takov\'{y}, \v{z}e 
+ \[ x \in L_\beta .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu dostaneme
+ \[ x \in R_\beta .\]
+Z definice $ \mathbb{WF} $ dost\'{a}v\'{a}me 
+\[ x \in \mathbb{WF} .\]
+T\'{i}m jsme tedy dok\'{a}zali 
+\[ \mathbb{L} \subset \mathbb{WF} .\]
+\end{proof}~\\
+
+V n\'{a}sleduj\'{i}c\'{i}m lemma si dok\'{a}\v{z}eme, \v{z}e ka\v{z}d\'{e}  $ L_\alpha $ je transitivn\'{i}.
+\begin{lemma}
+~\\
+\label{lem:Ltran}
+\[ (\forall \alpha \in \textit{On}) (\forall x \in L_\alpha)( y \in x \rightarrow y \in L_\alpha)  \]
+\end{lemma}
+\begin{proof}
+~\\ Dokazujme indukc\'{i} p\v{r}es $ \alpha \in \textit{On} $.
+~\begin{description}
+\item[$ \alpha=\emptyset $:]~\\ 
+ $ L_\alpha $ neobsahuje \v{z}\'{a}dn\'{y} prvek, tedy formule je trivi\'{a}ln\v{e} spln\v{e}na.
+\item[$ \alpha=\beta+1 $:] ~\\ 
+Nech\v{t} tedy m\'{a}me lemma dok\'{a}z\'{a}no pro $ \forall \gamma ( \gamma <  \alpha )$ a $  \alpha=\beta + 1 $ pak
+\[ L_\alpha=\mathfrak{DP}(L_\beta) .\]
+Nech\v{t} tedy m\v{e}jme 
+\[ x \in L_\alpha .\]
+Z definice $ \mathfrak{DP}(L_\beta) $ dostaneme
+\[ x \subset L_\beta .\]
+ $ L_\beta $ je transitivn\'{i} mno\v{z}ina z induk\v{c}n\'{i}ho p\v{r}edpokladu a podle lemma \ref{lem:sub} m\'{a}me
+\[ L_\beta \subset L_\alpha .\]
+Kombinaci t\v{e}chto dvou tvrzen\'{i} dost\'{a}v\'{a}me 
+\[ x \subset L_\alpha.\]
+\item[$ \alpha  $ limitn\'{i} ordin\'{a}l:]~\\
+Nech\v{t} tedy m\'{a}me lemma dok\'{a}z\'{a}no pro $ \forall \gamma ( \gamma <  \alpha )$ a nech\v{t} 
+\[  x \in L_\alpha .\]
+Z definice $ L_\alpha  $ plyne,\v{z}e existuje   $   \gamma <  \alpha $, tak \v{z}e 
+\[  x \in L_\gamma .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu v\'{i}me, \v{z}e $  L_\gamma $ je transitivn\'{i} tedy
+\[  x \subset L_\gamma .\]
+Co\v{z} op\v{e}tovn\'{y}m pou\v{z}it\'{i}m definice $ L_\alpha  $ d\'{a}v\'{a} 
+\[  x \subset L_\alpha.\]
+\end{description}
+\end{proof}~\\
+
+Nadefinujme si n\v{e}kolik vlastnost\'{i} relac\'{i}.
+\begin{definice}
+\textbf{\'{U}zk\'{a} relace}\\
+Relaci $ R $ nazveme \'{u}zkou pr\'{a}v\v{e} tehdy kdy\v{z}  $ \{x: xRy \} $ je mno\v{z}ina pro ka\v{z}d\'{e} y. 
+\end{definice}
+
+\begin{definice}~\\
+\label{def:pred}
+Kdy\v{z} $ x \in A $, a $ R $ je \'{u}zk\'{a} relace na $ A $, tak definujme \[ \textit{pred(A,x,R)}=\{y \in A: yRx\} .\]
+\end{definice}
+
+\begin{definice}
+~\\
+Relaci $ R $ nazveme extenzion\'{a}ln\'{i} na $ A $, pr\'{a}v\v{e} tehdy kdy\v{z} 
+\[  \forall x,y \in A(\forall z \in A (zRx \leftrightarrow zRy) \Rightarrow x=y ) .\]
+\end{definice}~\\
+N\'{a}sleduj\'{i}c\'{i} lemma pou\v{z}ijeme k d\r{u}kazu extenzionality relace $ R $.~\\
+\begin{lemma}
+\label{lem:exten}
+\[ (\textit{pred(A,x,R)} =  \textit{pred(A,y,R)}) \Leftrightarrow  (\forall z \in A (zRx \leftrightarrow zRy)) \]
+\end{lemma}
+\begin{proof}~\\
+Nech\v{t} tedy plat\'{i} \[ \textit{pred(A,x,R)} =  \textit{pred(A,y,R)} .\]
+Zvolme libovoln\'{e} $ z \in A $, tak \v{z}e $ zRx $. \\
+Z rovnosti  \[ \textit{pred(A,x,R)} =  \textit{pred(A,y,R)} ,\] dostaneme $  zRy $.  \\
+Te\v{d} zvolme libovoln\'{e} $ z \in A $, tak \v{z}e $ \neg zRx $. \\
+Z rovnosti  \[ \textit{pred(A,x,R)} =  \textit{pred(A,y,R)} ,\] dostaneme $\neg  zRy$.\\
+Te\v{d} dok\'{a}\v{z}em druhou \v{c}\'{a}st implikace. \\
+Nech\v{t} tedy plat\'{i} \[ \forall z \in A (zRx \leftrightarrow zRy) .\]
+Vezmeme libovoln\'{e} $ a \in \textit{pred(A,x,R)}$. Z definice $\textit{pred(A,x,R)} $ v\'{i}me  \[ a \in A \wedge aRx .\]
+Z p\v{r}edpokladu \[ \forall z \in A (zRx \leftrightarrow zRy) \] tedy m\'{a}me 
+\[ a \in A \wedge aRy .\] 
+Pak tedy z definice $\textit{pred(A,y,R)}$ dostaneme 
+\[ a \in \textit{pred(A,y,R)} . \]
+Opa\v{c}n\'{a} inkluze se dok\'{a}\v{z}e obdobn\v{e}.
+\end{proof}~\\~\\
+Doka\v{z}me si dal\v{s}\'{i} lemma o vlastnostech transitivn\'{i}ch mno\v{z}in.
+\begin{lemma} 
+\label{lem:pred}
+~\\
+Nech\v{t} $ \textsf{M} $ je transitivn\'{i}, tak 
+\[  \mathit{pred(\mathsf{M},x,\in)} = x .\]
+\end{lemma}
+\begin{proof}
+~\\
+Nech\v{t} tedy pro n\v{e}jak\'{e} $  x \in \mathsf{M}  $ m\'{a}me \[ y \in x  .\] 
+Podle definice \ref{def:pred} je  \[ y \in \mathsf{M} \rightarrow y \in \mathit{pred(\mathsf{M},x,\in)} .\] 
+Z transitivity $ \textsf{M} $  plyne pro ka\v{z}d\'{e}  $ x \in \textsf{M} $
+\[ y \in x \rightarrow y \in   \textsf{M} . \]
+Z transitivity implikace tedy plyne 
+\[ y \in x \rightarrow y \in \mathit{pred(\mathsf{M},x,\in)}  .\]
+Tedy z toho dostaneme \[ x \subset \mathit{pred(\mathsf{M},x,\in)}  .\]
+Dokazujme opa\v{c}nou inkluzi. \\ 
+Nech\v{t} tedy pro n\v{e}jak\'{e}  $  x \in \mathsf{M}$ je \[  y \in \mathit{pred( \mathsf{M},x,\in)} .\] Podle definice \ref{def:pred} tedy plat\'{i}  \[ y \in x  .\]
+A tedy dost\'{a}v\'{a}me \[ \mathit{pred(\mathsf{M},x,\in)} \subset x .\]
+\end{proof}~\\~\\
+Te\v{d} si dok\'{a}\v{z}eme lemma o extenzionalit\v{e} relace.
+\begin{lemma}
+~\\
+\label{lem:ext}
+Kdy\v{z} $  \langle \textsf{M},\in \rangle  $ je transitivn\'{i} model, tak relace $\in$ je extenzion\'{a}ln\'{i} na  $  \textsf{M} $ 
+\end{lemma}
+\begin{proof}~\\
+Pou\v{z}it\'{i}m lemma \ref{lem:exten} na definici \ref{def:pred} dostaneme \[  \forall x,y \in A( (\textit{pred(A,x,R)} =  \textit{pred(A,y,R)})\Rightarrow x=y ) .\] Pokud aplikujeme lemma \ref{lem:pred}  dost\'{a}v\'{a}me pro transitivn\'{i} mno\v{z}iny podm\'{i}nku
+\[ \forall x,y \in A(x = y \rightarrow x=y) .\]
+\end{proof}~\\~\\
+Dok\'{a}\v{z}me si lemma o fundovanosti relace.
+\begin{lemma}
+~\\
+Kdy\v{z} $  \textsf{M}  \subset  \mathbb{WF} $ pak  $ \textsf{M} $ spl\v{n}uje axiom fundovanosti.
+\label{lem:fund}
+\end{lemma}
+\begin{proof}~\\
+Pro ka\v{z}d\'{e} $ x \in \mathbb{WF} $ plat\'{i} axiom fundovanosti. Pokud \[  M \subset  \mathbb{WF}  ,\] pak pro liboln\'{e} $ x \in M $ plat\'{i} axiom fundovanosti.
+\end{proof}~\\~\\
+Definujme pojem podmno\v{z}inov\v{e} uzav\v{r}en\'{e}ho seznamu formul\'{i}.
+\begin{definice}
+~\\
+Nazveme seznam formul\'{i} $ \phi_0,...,\phi_{n-1}  $ podmno\v{z}inov\v{e} uzav\v{r}en\'{y}, pr\'{a}v\v{e} tehdy kdy\v{z} ka\v{z}d\'{a} podformule libovol\'{e} formule $ \phi_i $ je v seznamu a \v{z}\'{a}dn\'{a} formule neobsahuje univers\'{a}ln\'{i} kvantifik\'{a}tor. 
+\end{definice}
+Doka\v{z}me si lemma o uzav\v{r}enosti na existen\v{c}n\'{i} kvantifik\'{a}tor.
+\begin{lemma}
+\label{lem:ref}
+~\\
+Nech\v{t} $ \phi_0,...,\phi_{n-1}  $ je podmno\v{z}inov\v{e} uzav\v{r}en\'{y}  seznam formul\'{i} a \\ A,B jsou nepr\'{a}zdn\'{e} t\v{r}\'{i}dy tak, \v{z}e $ A \subset B $, tak nasledujic\'{i} je ekvivaletn\'{i}:\\
+Pro ka\v{z}dou $ \phi_{i}(x_0,...,x_i) $ ze seznamu plat\'{i}:
+\[ (\forall x_0,...,x_t \in A) ((\phi_{t}^\mathrm{A}(x_0,..x_t) \leftrightarrow  \phi_{t}^\mathrm{B}(x_0,..x_t) ))(1) \] 
+Pro ka\v{z}dou existen\v{c}n\'{i} formuli $ \phi_{i}(x_0,...,x_i) $ tvaru $ \exists a (\phi_{j}(x_0,...,x_i,a)) $ ze seznamu plat\'{i}:
+\[ (\forall x_0,...,x_i \in A) ((\exists a \in B) (\phi_{i}^\mathrm{B}(x_0,..x_i) \rightarrow (\exists a \in A) \phi_{j}^\mathrm{B}(x_0,..x_i,a) )) (2) \]
+\end{lemma}
+\begin{proof}
+~\\
+Nech\v{t} tedy m\'{a}me n\v{e}jak\'{e} $ x_0,...,x_i \in A  $ a nech\v{t} plat\'{i} p\v{r}edpoklad
+\[ (\forall x_0,...,x_t \in A) ((\phi_{t}^\mathrm{A}(x_0,..x_t) \leftrightarrow  \phi_{t}^\mathrm{B}(x_0,..x_t) )) . \] 
+P\v{r}edpokl\'{a}dejme
+\[ \phi_{i}^\mathrm{B}(x_0,..x_i) , \]
+z p\v{r}edpokladu pro  $ \phi_{i} $ plat\'{i}
+\[ \phi_{i}^\mathrm{A}(x_0,..x_i) . \]
+To je podle definice a relativizace
+\[ (\exists a \in A) (\phi_{j}^\mathrm{A}(x_0,..x_j,a)) . \]
+Z p\v{r}edpokladu pro  $ \phi_{j} $ plat\'{i}
+\[ (\exists a \in A) (\phi_{j}^\mathrm{B}(x_1,..x_n,a)) . \]
+Druhou implikaci dok\'{a}\v{z}eme indukc\'{i} podle slo\v{z}itosti formule. \\
+Pro v\v{s}echny formule $  \psi_{i} $ bez kvantifik\'{a}toru plat\'{i} (1) z lemma \ref{lem:transa}.\\
+Nech\v{t} tedy  $  \psi_{i} $ je $ \exists a ~ \psi_{j}(x_0,..x_j,a) $ fixujme $ x_0,...,x_i \in A  $. \\
+Z definice relativizace dostaneme
+\[  (\phi_{i}^\mathrm{A}(x_0,..x_i))  \Leftrightarrow ((\exists a \in A) (\phi_{j}^\mathrm{A}(x_0,..x_i,a))) .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu dostaneme
+\[ ((\exists a \in A) (\phi_{j}^\mathrm{A}(x_0,..x_i,a))) \Leftrightarrow ((\exists a \in A) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))) .\]
+Z $  A \subset B $ plyne 
+\[ ((\exists a \in A) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))) \Rightarrow ((\exists a \in B) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))).\]
+A z p\v{r}edpokladu v\v{e}ty \[ ((\exists a \in A) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))) \Leftarrow ((\exists a \in B) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))).\]
+Z definice relativizace dostaneme
+\[  ((\exists a \in B) (\phi_{j}^\mathrm{B}(x_0,..x_i,a))) \Leftrightarrow   (\phi_{i}^\mathrm{B}(x_0,..x_i)) .\]
+\end{proof}~\\~\\
+Doka\v{z}me si v\v{e}tu, kter\'{a} je jedna z verz\'{i} Principu reflexe.
+\begin{veta}
+\textbf{Princip reflexe\\}
+Nech\v{t} $ \phi_0,...,\phi_{n-1}  $ je seznam formul\'{i},  m\'{a}me nepr\'{a}zdnou t\v{r}\'{i}du $ \mathbb{T} $, pro ka\v{z}d\'{e} $  \alpha  \in \textit{On}$ je $ T_\alpha $ mno\v{z}ina a pro libovoln\'{e}   $  \alpha,\beta,\gamma  \in \textit{On}$ plat\'{i}:
+\begin{itemize}
+\item \[ \alpha < \beta \rightarrow T_\alpha \subset T_\beta \]
+\item pro limitn\'{i} $ \zeta $
+\[ T_\zeta=\bigcup_{\rho < \zeta} T_\rho \]
+\item
+\[ \mathbb{T}= \bigcup_{\rho \in  \textit{On}} T_\rho \] 
+\end{itemize}
+pak $  \forall \alpha (\exists \beta > \alpha) $ tak\v{z}e pro n\v{e}j plat\'{i} \begin{itemize}
+  \item $ \beta $  je limitn\'{i} ordin\'{a}l
+  \item \[ \bigwedge_{i<n}(\phi_{i}^\mathrm{T_\beta} \Leftrightarrow \phi_{i}^\mathbb{T})  \]
+  \end{itemize}
+\label{vet:refle}
+\end{veta}
+\begin{proof}
+~\\
+Nech\v{t} seznam formul\'{i} $ \phi_0,...,\phi_{n-1}  $ je podmno\v{z}inov\v{e} uzav\v{r}en\'{y}, pokud nen\'{i} tak ho roz\v{s}\'{i}\v{r}\'{i}me, tak aby byl.\\
+Pro ka\v{z}d\'{e} $ i=0,1,..,n-1 $, tak \v{z}e $ \phi_i $ je $ \exists x \phi_j(x,y_1,..,y_l) $ definujme $ G_i $ takto:
+\[ G_i:\mathbb{T}^n \rightarrow \textit{On} .\]
+Kdy\v{z}  ($ \neg \exists x \in \mathbb{T}) (\phi_j^\mathrm{T}(x,y_1,..,y_l))  $, pak
+\[ G_i(y_1,..,y_l)=0 . \]
+Pro ($ \exists x \in \mathbb{T}) (\phi_j^\mathrm{T}(x,y_1,..,y_l)) $ definujme
+\[ G_i(y_1,..,y_l)=\alpha \]
+tak, \v{z}e $ \alpha $ je nejmen\v{s}\'{i} takov\'{e} $ \alpha $, \v{z}e  
+\[  (\exists x \in {T_\alpha})(  \phi_j^\mathrm{T}(x,y_1,..,y_l)). \]
+Te\v{d} definujme 
+\[ F_i:\textit{On}  \rightarrow \textit{On} \]
+Kdy\v{z} $ \phi_i $ nen\'{i} $ \exists x \phi_j(x,y_1,..,y_l)$, tak
+\[ F_i(\alpha)=0 .\]
+Jinak kdy\v{z} $ \phi_i $ je $ \exists x \phi_j(x,y_1,..,y_l)$
+\[ F_i(\alpha)=sup\{ G_i(y_1,..,y_l):y_1,..,y_l \in T_\alpha \}.\]
+Z toho te\v{d} definujme
+\[ K (\alpha)=max( \{F_i(\alpha): i < n\} \cup \{\alpha + 1\}) .\]
+Nech\v{t} tedy m\'{a}me $ \alpha $ dan\'{e}. Uk\'{a}\v{z}eme si jak zkonstruovat $ \beta > \alpha $, tak \v{z}e:
+\begin{itemize}
+  \item $ T_\beta \neq \emptyset  $,
+ \item spl\v{n}uje lemma \ref{lem:ref} pro $ T_\beta $ a $ \mathbb{T} $ .
+ \end{itemize}
+Tak nech\v{t} $ \gamma_0 $ je nejmen\v{s}\'{i} $ \gamma > \alpha $, tak \v{z}e $ T_\gamma \neq \emptyset   $ .\\
+ Rekurz\'{i} pak zkonstruujeme
+\[  \gamma_{n+1}=K(\gamma_n) .\]
+Z konstrukce plyne
+\[ \beta < \gamma_0 < \gamma_1 < ..... .\]
+Definujme 
+\[ \beta=sup\{\gamma_k: k \in \omega \} .\]
+M\'{a}me tedy $ \beta $  limitn\'{i} ordin\'{a}l pro kter\'{y} plat\'{i}
+ \[ \bigwedge_{i<n}(\phi_{i}^\mathrm{T_\beta} \Leftrightarrow \phi_{i}^\mathbb{T})  .\]
+\end{proof}
+\newpage
+Dok\'{a}\v{z}eme si lemma, o tom \v{z}e $ \mathfrak{DP}(L_\alpha)$  obsahuje jako prvek $ L_\alpha$ .
+\begin{lemma}
+\label{lem:prv}
+\[ L_\alpha \in L_{\alpha +1} \]
+\end{lemma}
+\begin{proof}
+\[ L_\alpha=\{x \in L_\alpha: (x=x)^\mathrm{L_\alpha}\} , \]
+co\v{z} podle lemma \ref{lem:def} znamen\'{a}
+\[ L_\alpha \in \mathfrak{DP}(L_\alpha) = L_{\alpha +1} .\]
+\end{proof}~\\
+Definujme si $ \rho(x) $ jako $ \mathbb{L} $-rank.
+\begin{definice}~\\
+\label{def:rank}
+Kdy\v{z} $ x  \in  \mathbb{L}, \rho(x) $ je $ \mathbb{L} $-rank roven nejmen\v{s}\'{i}mu $  \beta $ tak, \v{z}e
+$  x \in L_{\beta +1}  $. 
+\end{definice}
+Doka\v{z}me si lemma pro platnost sch\'{e}ma nahrazen\'{i}.
+\begin{lemma}
+~\\
+Pro libovolnou formuli $ \phi(x,y,A,a_1,..,a_n)$ a libovoln\'{e} $  A,a_1,..,a_n \in M$, kde A je $ dom(\phi) $ a M je transtivn\'{i}.\\
+Kdy\v{z} plat\'{i} 
+\[ ((\forall x\in A) (\exists!y\in M) \phi^\mathrm{M}(x,y,A,a_1,..,a_n)) \Rightarrow \]\[ \Rightarrow((\exists Y \in M)(\{y:(\exists x \in A)  \phi^\mathrm{M}(x,y,A,a_1,..,a_n) \} \subset Y) \]
+tak sch\'{e}ma nahrazen\'{i} plat\'{i} v M.
+\label{lem:nahr}
+\end{lemma}
+\begin{proof}
+~\\
+Nejd\v{r}\'{i}ve si dok\'{a}\v{z}eme 
+\[(\forall x,y,z \in M)(F(x,y) \wedge F(x,z) \rightarrow z=y)\Rightarrow \]\[ \Rightarrow ((\forall x\in A) (\exists!y\in M) \phi^\mathrm{M}(x,y,A,a_1,..,a_n)) .\]
+Formule $ \phi^\mathrm{M}(x,y,A,a_1,..,a_n)$ definuje funkci tak, \v{z}e \[ A=dom(F) .\] 
+Pak z definice dom(F) pro libovoln\'{e} $ x \in A $ existuje y tvaru \[ y=F(x) \] a z p\v{r}edpokladu m\r{u}\v{z}e existovat pr\'{a}v\v{e} jedno y.  \\
+Te\v{d} dok\'{a}\v{z}eme 
+\[ ((\exists Y \in M)(\{y:(\exists x \in A)  \phi^\mathrm{M}(x,y,A,a_1,..,a_n) \} \subset Y) \Rightarrow \]\[\Rightarrow (\exists W \in M) (\forall y \in M) ( y \in W \leftrightarrow \exists x ( x \in A \wedge F(x,y)).\]
+Z p\v{r}edpokladu $ \phi^\mathrm{M}(x,y,A,a_1,..,a_n) $ definujme funkci $ F $, tak\v{z}e $ W=Rng(F) $.
+\end{proof}
+\newpage
+Uk\'{a}\v{z}eme si, \v{z}e dal\v{s}\'{i} vlastnost je $\Delta_0$-formule.
+\begin{lemma}
+~\\
+$ x \text{ je ordin\'{a}l} $ je $\Delta_0$ formule.
+\end{lemma}
+\begin{proof}~\\
+Ordin\'{a}l je definovan\'{y} takto 
+\[  x \text{ je ordin\'{a}l}  \Leftrightarrow  ((x \text{ je transitivn\'{i} mno\v{z}ina})   \wedge  (x \text{ je tot\'{a}ln\v{e} uspo\v{r}\'{a}dan\'{a}}\in )). \]
+Te\v{d} si uk\'{a}\v{z}eme, \v{z}e lev\'{a} i prav\'{a} \v{c}\'{a}st konjunkce jsou $\Delta_0$ formule a tedy i formule je podle definice $\Delta_0$ formule.\\
+Definujme takto transitivn\'{i} mno\v{z}inu
+\[ (x \text{ je transitivn\'{i} mno\v{z}ina}) \Leftrightarrow  ((\forall v \in x) (\forall z \in v) (z \in x)) .\]
+Definujme si, \v{z}e x je tot\'{a}ln\'{i} uspo\v{r}\'{a}dan\'{a} relac\'{i} $\in$ jako
+\[ (x \text{ je tot\'{a}ln\v{e} uspo\v{r}\'{a}dan\'{a} }\in) \Leftrightarrow  ((\forall y \in x)(\forall z \in x)(y \in z \vee y=z \vee z\in y )) \] 
+\end{proof}~\\
+Doka\v{z}me si lemma, o tom \v{z}e pro ka\v{z}d\'{e} $ \alpha  $ plat\'{i} $ (\alpha \in  L_{\alpha+1}) $.
+\begin{lemma}
+\label{lem:ord}
+\[ (\forall \alpha \in  \textit{On})(\alpha \in  L_{\alpha+1}) \]
+\end{lemma}
+\begin{proof}~\\
+Vzhledem k tomu \v{z}e $ L_\alpha $ je transitivn\'{i} mno\v{z}ina, tak formule  $ x $ je ordin\'{a}l  je absolutn\'{i}
+a tedy definujme 
+\[ \alpha = L_\alpha \cap  \textit{On} = \{x \in L_\alpha : (x \in  \textit{On})^\mathrm{L_\alpha}  \} .\]
+Co\v{z} podle lemma \ref{def:defi} je 
+\[ \alpha \in L_{\alpha+1} ,\]
+pokud pro $  \alpha $ plat\'{i} \[ \alpha \subset L_\alpha. \]
+Tak si to tedy dok\'{a}\v{z}eme transfinitn\'{i} indukc\'{i}.
+~\begin{description}
+\item[$ \alpha=\emptyset $:]~\\ 
+Pr\'{a}zdn\'{a} mno\v{z}ina je podmno\v{z}ina, ka\v{z}d\'{e} mno\v{z}iny, specialn\v{e} tedy plat\'{i}
+\[ \emptyset \subset L_\emptyset.  \]
+\item[$ \alpha=\beta+1 $:] ~\\ 
+Nech\v{t} tedy pro v\v{s}echny $ \beta < \alpha $ plat\'{i} \[ \beta \subset L_\beta  .\] Vezm\v{e}me tedy \[  x \in \alpha . \] Z $ \alpha=\beta+1 $ dostaneme \v{z}e  \[ x=\beta \vee x \in \beta . \]
+Pro oba p\v{r}\'{i}pady provedeme d\r{u}kaz.
+\begin{description}
+  \item[$ x=\beta $] ~\\ 
+  Podle p\v{r}edpokladu plat\'{i}
+\[ \beta \in L_\beta  .\]
+Z lemma \ref{lem:sub} dostaneme
+\[ L_\beta \subset L_\alpha .\]
+Z toho pak tedy dostaneme
+\[ \beta \in L_\alpha .\]
+Tak\v{z}e pro tento p\v{r}\'{i}pad m\'{a}me
+\[ \alpha \subset \ L_\alpha . \]
+  \item[$ x \in \beta $] ~\\ 
+  Z induk\v{c}n\'{i}ho p\v{r}edpokladu 
+\[ x \in L_\beta  .\]
+Z lemma \ref{lem:sub} m\'{a}me 
+\[ L_\beta \subset L_\alpha .\]
+A pak tedy \[ \beta \in L_\alpha .\]
+Tak\v{z}e i pro tento p\v{r}\'{i}pad dostaneme
+\[ \alpha \subset \ L_\alpha . \]
+\end{description}
+\item[$ \alpha  $ limitn\'{i} ordin\'{a}l:]~\\
+Nech\v{t} tedy m\'{a}me  dok\'{a}z\'{a}no pro $ \forall \gamma ( \gamma <  \alpha )$ a nech\v{t} 
+\[  x \in \alpha .\]
+Z definice $ \alpha  $ plyne, \v{z}e existuje   $   \gamma <  \alpha $, tak \v{z}e 
+\[  x \in \gamma .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu v\'{i}me, \v{z}e 
+\[  \gamma \subset L_\gamma .\]
+Z \v{c}eho\v{z} tedy dostaneme
+\[  x \in L_\gamma .\]
+Op\v{e}tovn\'{y}m pou\v{z}it\'{i}m definice $ L_\alpha  $ m\'{a}me 
+\[  x \in L_\alpha.\]
+Tak\v{z}e i pro tento p\v{r}\'{i}pad dostaneme
+\[ \alpha \subset \ L_\alpha . \]
+\end{description}
+\end{proof}
+\newpage
+\subsection{$ \mathbb{L} $ je model ZF} 
+\begin{veta}
+\label{vet:ZF}
+$ \mathbb{L} $ spl\v{n}uje axiomy ZF 
+\end{veta}
+\begin{proof}~
+\begin{description}
+  \item[Axiom extenzionality] ~\\
+  Podle lemma \ref{lem:Ltran} je $ \mathbb{L} $ transitivn\'{i} a tedy podle lemma \ref{lem:ext} v $ \mathbb{L} $ plat\'{i} axiom extenzionality.
+  \item[Sch\'{e}ma nahrazen\'{i}] ~\\
+  Podle lemma \ref{lem:nahr} sta\v{c}\'{i} ov\v{e}\v{r}it 
+\[ ((\forall x\in A) (\exists!y\in L) \phi^\mathbb{L}(x,y,A,a_1,..,a_n)) \Rightarrow \]\[ \Rightarrow((\exists Y \in L)(\{y:(\exists x \in A)  \phi^\mathbb{L}(x,y,A,a_1,..,a_n) \} \subset Y) .\]
+Budeme tedy p\v{r}edpokl\'{a}dat 
+\[ ((\forall x\in A) (\exists!y\in L) \phi^\mathbb{L}(x,y,A,a_1,..,a_n))  .\]
+Te\v{d} definujme 
+\[ \alpha=sup\{\rho(y) +1 : (\exists x \in A)  \phi^\mathbb{L}(x,y,A,a_1,..,a_n) \} , \]
+z toho dostaneme na\v{s}e hledan\'{e} Y jako \[ Y=L_\alpha .\] O $ L_\alpha  $ v\'{i}me podle lemma \ref{lem:prv}, \v{z}e  \[ Y \in L_{\alpha + 1} .\]
+Co\v{z} pak n\'{a}m z definice $ \mathbb{L}$ d\'{a}v\'{a}
+\[  Y \in \mathbb{L} .\]
+\item[Sch\'{e}ma vyd\v{e}len\'{i}]~\\
+Nech\v{t} je dan\'{a} formule $ \phi(x,z) $, tak pro ni mus\'{i}me dok\'{a}zat 
+\[ \forall y(\{x \in y :\phi^\mathbb{L}(x,z) \} \in \mathbb{L} .\]
+Podle v\v{e}ty \ref{vet:refle} m\'{a}me pro $ \phi $ ordin\'{a}l $ \alpha  $ takov\'{y}, \v{z}e  
+\[ Y=\{x \in y :\phi^\mathbb{L}(x,y) \}=\{x \in L_\alpha :\phi^\mathrm{L_\alpha}(x,y) \wedge x \in y\} .\]
+Z lemma \ref{lem:prv} v\'{i}me, \v{z}e
+\[ Y=\{x \in L_\alpha :\phi^\mathrm{L_\alpha}(x,y) \wedge x \in y\} \in L_{\alpha+1} .\]
+Kone\v{c}n\v{e} tedy  z definice $ \mathbb{L}$  dostaneme
+\[  Y \in \mathbb{L} .\]
+\item[Axiom dvojice]~\\
+M\'{a}me dok\'{a}zat formuli
+\[ (\forall a \in \mathbb{L})(\forall b \in \mathbb{L})(\exists c \in \mathbb{L})(\forall x \in \mathbb{L})(x \in c \Leftrightarrow(x=a \vee x=b)) .\]
+Nech\v{t} tedy m\'{a}me dan\'{e}  \[ a \in L_\alpha, \]  \[  b \in L_\beta  .\] 
+Tak definujme  \[ \gamma=max\{\beta,\alpha\} .\] Je z\v{r}ejm\'{e},\v{z}e \[ a,b \in L_\gamma .\]  
+Z definice uz\'{a}v\v{e}ru na G\"{o}delovy operace dostaneme \[ \{a,b\} \in L_{\gamma+1} .\] A nakonec tedy z definice $ \mathbb{L} $
+\[  \{a,b\} \in \mathbb{L} .\]
+\item[Axiom sumy]~\\
+Dokazujeme formuli
+\[ (\forall a \in \mathbb{L})(\exists c \in \mathbb{L})(\forall x \in \mathbb{L})(x \in c \Leftrightarrow \exists y \in \mathbb{L}(x \in y  \wedge y \in a)) .\]
+
+Nech\v{t} tedy m\'{a}me dan\'{e}  \[ a \in  \mathbb{L} .\] Z definice $ \mathbb{L} $ dostaneme \[ a \in L_\alpha .\] Z definice uz\'{a}v\v{e}ru na G\"{o}delovy operace dostaneme \[\bigcup a \in L_{\alpha+1} .\] Pak tedy z definice $ \mathbb{L} $ dostaneme
+\[  \bigcup a  \in \mathbb{L} .\]
+\item[Axiom potence]~\\
+A\v{c} se to zd\'{a} neintuivn\'{i} dok\'{a}\v{z}eme, \v{z}e
+\[ (\forall a \in \mathbb{L})(\exists c \in \mathbb{L})(\forall x \in \mathbb{L})(x \in c \Leftrightarrow  x \subset a)) .\]
+Na to si ale nejd\v{r}\'{i}ve dok\'{a}\v{z}eme, \v{z}e $  x \subset a $ je  $\Delta_0$-formule 
+\[  (x \subset a) \Leftrightarrow ((\forall y \in x)( y\in a)) .\]
+Nech\v{t} tedy m\'{a}me dan\'{e} \[ a \in \mathbb{L} .\]
+Z definice $ \mathbb{L} $ dostaneme \[ a \in L_\alpha .\]
+Te\v{d} definujme mno\v{z}inu \[ \{y \in L_\alpha: y \subset a)\}  ,\] pro kterou podle lemma \ref{lem:def} plat\'{i}
+\[ \{y \in L_\alpha: y \subset a) \} \in L_{\alpha+1} .\]
+A pak pou\v{z}it\'{i}m definice $ \mathbb{L} $ dostaneme
+\[  \{y \in L_\alpha: y \subset a) \}  \in \mathbb{L} .\]
+\item[Axiom nekone\v{c}na]~\\
+Te\v{d} dokazujme
+\[ \exists a \in \mathbb{L} ( \emptyset \in a \wedge (x \in a \Rightarrow x \cup \{x\} \in a)) .\]
+Takov\'{e} $ a $ je pro kter\'{e} formule plat\'{i} je evidentn\v{e} $ \omega  $, pro kterou podle lemma \ref{lem:ord} plat\'{i}\[ \omega \in L_{\omega +1} .\]
+Z \v{c}eho\v{z} podle definice $ \mathbb{L} $ dostaneme
+\[  \omega  \in \mathbb{L} .\]
+\item[Axiom fundovanosti]~\\
+A kone\v{c}n\v{e} dok\'{a}\v{z}eme
+\[ (\forall a \in \mathbb{L})(a \neq \emptyset \Rightarrow (\exists b \in  \mathbb{L})(b \in a \wedge b \cap a = \emptyset)) .\] 
+Podle lemma \ref{lem:subwf} je \[ \mathbb{L} \subset \mathbb{WF} \] a podle lemma \ref{lem:Ltran} je $ \mathbb{L}  $ transitivn\'{i}. M\r{u}\v{z}eme tedy pou\v{z}\'{i}t lemma \ref{lem:fund}, t\'{i}m dost\'{a}v\'{a}me, \v{z}e plat\'{i} axiom fundovanosti.
+\end{description}
+\end{proof}
+
+\subsection{Axiom konstruovatelnosti}
+\begin{definice}\textbf{Axiom konstruovatelnosti}
+\[ \mathbb{L}=\mathbb{V} \]
+nebo-li
+\[ \forall x \exists \alpha (x \in L_\alpha)
+ \]
+\end{definice}
+\begin{lemma}~\\
+\label{lem:L}
+$ L_\alpha $ je absolutn\'{i}
+\end{lemma}
+\begin{proof}~\\
+Podle lemma \ref{lem:abs} $ \mathfrak{D} $ je absolutn\'{i} funkce a podle lemma \ref{lem:Ltran} je $ L_\alpha $ transitivn\'{i}.
+Transfinitn\'{i} indukc\'{i}:
+\begin{description}
+  \item[$ \alpha=\emptyset $] ~\\
+  Pr\'{a}zdn\'{a} mno\v{z}ina je absolutn\'{i}, proto\v{z}e 
+\[ \emptyset=\{x:x \neq x \} \]
+a  $ b  \neq  b $  je $\Delta_0$ formule.
+  \item[$ \alpha=\beta +1 $]~\\
+  Nech\v{t} tedy $ L_\beta $ je absolutn\'{i}  a tedy $ L_{\beta+1} $ je absolutn\'{i} z definice, 
+ \[ L_{\beta+1}=\mathfrak{D}(L_\beta) ,\]
+proto\v{z}e $ \mathfrak{D} $ je absolutn\'{i} funkce a tedy kdyby 
+\[  L_{\beta+1}  \neq  L_{\beta+1}^\mathbb{L} , \]
+tak by to bylo ve sporu s t\'{i}m, \v{z}e $ \mathfrak{D} $ je absolutn\'{i} funkce.
+  \item[$ \alpha $ je limitn\'{i} ordin\'{a}l]~\\
+  Nech\v{t} tedy pro v\v{s}echny $ \beta < \alpha $ 
+\[  L_{\beta}  =  L_{\beta}^\mathbb{L}  .\]
+Budem postupovat sporem. Nech\v{t} a\v{t} plat\'{i}
+\[  L_{\alpha} \neq L_{\alpha}^\mathbb{L}  .\]
+Z definice $ L_\alpha $  mus\'{i} existovat $\gamma < \alpha $ tak, \v{z}e 
+\[  L_{\gamma}  \neq  L_{\gamma}^\mathbb{L},  \]
+co\v{z} je spor s p\v{r}edpokladem.
+\end{description}
+\end{proof}
+\newpage
+\begin{veta}
+\[ \mathbb{L}  \text{ je model } ZF +\mathbb{L}=\mathbb{V} \] 
+\end{veta}
+\begin{proof}~\\
+Podle v\v{e}ty \ref{vet:ZF} $ ZF $ plat\'{i} v $\mathbb{L}$, tedy sta\v{c}\'{i} dok\'{a}zat, \v{z}e
+\[ (\forall x \in \mathbb{L}) (\exists \alpha \in \mathbb{L})  (x \in L_\alpha)^\mathbb{L}.\]
+Nech\v{t} tedy fixujeme  \[ x \in \mathbb{L} . \] Z definice $ \mathbb{L} $ m\'{a}me \[ x \in L_\alpha . \]  Podle lemma \ref{lem:ord} je $ \alpha \in \mathbb{L} $ a podle lemma \ref{lem:L} je $ x \in L_\alpha $ absolutn\'{i}.
+\end{proof}
+\newpage
+\section{$ Con(ZF) \rightarrow Con(ZFC + GCH) $}
+\subsection{Axiom v\'{y}b\v{e}ru}
+\begin{veta}
+\[ WO \Rightarrow AC \]
+Nebo-li \v{z}e princip dobr\'{e}ho uspo\v{r}\'{a}d\'{a}n\'{i} implikuje axiom v\'{y}b\v{e}ru.
+\label{vet:WOAC}
+\end{veta}
+\begin{proof}~\\
+Nech\v{t} m\'{a}me mno\v{z}inu $ A $ a  definujme mno\v{z}inu 
+\[ B=\bigcup_{a \in A} a .\]
+Z p\v{r}edpokladu m\'{a}me mo\v{z}nost $ B $ dob\v{r}e uspo\v{r}\'{a}dat. Co\v{z} znamen\'{a}, \v{z}e ka\v{z}d\'{a} nepr\'{a}zdn\'{a} mno\v{z}ina m\'{a} nejmen\v{s}\'{i} prvek. Ozna\v{c}me ho $ min_a $, kde $ a $ je mno\v{z}ina, kde je  $ min_a $ je minim\'{a}ln\'{i} prvek. Te\v{d} pomoc\'{i} toho definujme v\'{y}b\v{e}rovou fuknci z $ A $ jako
+\[ F: A \rightarrow \bigcup_{a \in A} , \]
+\[ F(a)=min_a .\]
+Tak\v{z}e m\'{a}me v\'{y}b\v{e}rovou funkci $ F $ z libovoln\'{e}ho $ A $, tedy plat\'{i} axiom v\'{y}b\v{e}ru.~\\
+\end{proof}~\\~\\
+V dal\v{s}\'{i} \v{c}\'{a}sti provedeme d\r{u}kaz, \v{z}e axiom konstruovatelnosti implikuje axiom v\'{y}b\v{e}ru. Vyu\v{z}ijeme p\v{r}edchoz\'{i} v\v{e}tu a d\r{u}kaz povedeme tak, \v{z}e $ \mathbb{L}  $ jde dob\v{r}e uspo\v{r}\'{a}dat. K uspo\v{r}\'{a}d\'{a}n\'{i} vyu\v{z}ijeme dv\v{e} definice a to definici \ref{def:En} a definici \ref{def:rank}. Budememe postupovat tak, \v{z}e nejd\v{r}\'{i}ve se\v{r}ad\'{i}me $ L_\alpha $ pro ka\v{z}d\'{e} $ \alpha $ a pak podle $ \alpha $ se\v{r}ad\'{i}me $ L_\alpha $.
+
+\begin{definice}~\\
+Nech\v{t} tedy rekurz\'{i} p\v{r}es $ \alpha $ definujme uspo\v{r}\'{a}d\'{a}n\'{i} $ \vartriangleleft_\alpha=\vartriangleleft(\alpha)$ pro $ L_\alpha $
+\begin{description}
+  \item[$ \alpha=\emptyset $] 
+  \[  L_\alpha = \emptyset \]
+  \item[$ \alpha=\beta+1 $]~\\
+  Z induk\v{c}n\'{i}ho p\v{r}edpokladu m\v{e}jme uspo\v{r}\'{a}dan\'{i} $ \vartriangleleft_\beta $, definujme indukc\'{i} podle $ n $ lexikografick\'{e} uspo\v{r}\'{a}d\'{a}n\'{i} $\vartriangleleft_\beta^n $ na $ {L}_{\beta}^n $ jako
+\[ a \vartriangleleft_\beta^n b \leftrightarrow ((\exists k< n) ( a \upharpoonright k = b \upharpoonright k \wedge a(k)  \vartriangleleft_\beta  b(k) ).\]
+\newpage
+Te\v{d} definujme pro ka\v{z}d\'{e} $ a \in L_\alpha $ $n_a $ tak, \v{z}e to je nejmen\v{s}\'{i} $ n $, tak\v{z}e plat\'{i}\begin{center}
+$  (\exists s \in L_\beta^n)(\exists R \in Df(L_\beta,n+1)) (X=\{ x \in L_\beta: $  s\textasciicircum  $ \langle x \rangle \in R \}  \} ).  $
+\end{center}
+Te\v{d} definujme $ s_a $ jako nejmen\v{s}\'{i} $ s \in L_\beta^{n_a} $ vzhledem k  uspo\v{r}\'{a}dan\'{i}m $ \vartriangleleft_\beta^{n_a} $ pro kter\'{e} plat\'{i} 
+\begin{center}
+$(\exists R \in Df(L_\beta,n_a+1)) (X=\{ x \in L_\beta: $  s\textasciicircum  $ \langle x \rangle \in R \}  \} ).  $ \
+\end{center}
+Kone\v{c}n\v{e} definujme $ m_a $ jako nejmen\v{s}\'{i} $ m \in \omega $ takov\'{e}, \v{z}e plat\'{i}
+\begin{center}
+$ X=\{ x \in L_\beta: s_a$\textasciicircum  $ \langle x \rangle \in En(m,L_\beta,n_a) \}  $.
+\end{center}
+A te\v{d} kone\v{c}n\v{e} pro ka\v{z}d\'{e} $ X,Y \in L_\alpha $ definujme $X \vartriangleleft_\alpha Y$, kdy\v{z} plat\'{i} jedna z n\'{a}sleduj\'{i}c\'{i}ch t\v{r}ech podm\'{i}nek:
+\begin{enumerate}
+  \item \[ X \in L_\beta \wedge Y \in L_\beta \wedge X \vartriangleleft_\beta Y \]
+  \item \[ X \in L_\beta \wedge Y \notin  L_\beta \]
+  \item \[ X \notin L_\beta \wedge Y \notin  L_\alpha \wedge [(n_x<n_y) \vee (n_x=n_y \wedge s_x\vartriangleleft_\beta^{n_x}s_y) \vee\] \[\vee n_x=n_y \wedge s_x=s_y \wedge m_x<m_y]\]
+\end{enumerate}
+\item[$ \alpha  $ je limitn\'{i} ordin\'{a}l] 
+\[ \vartriangleleft_\alpha = \] \[ = \{(x,y) \in L_\alpha \times L_\alpha : \rho(x)<\rho(y) \vee (\rho(x)=\rho(y) \wedge (x,y) \in \vartriangleleft(\rho(x)+1)) \} \]
+\end{description}
+\label{def:orda}
+\end{definice}
+Tak te\v{d} m\'{a}me uspo\v{r}\'{a}dan\'{e} $ L_\alpha $ pomoc\'{i} uspo\v{r}\'{a}dan\'{i}  $ \vartriangleleft  $ pro ka\v{z}d\'{e} $ \alpha $ a pomoc\'{i} toho definujme uspo\v{r}\'{a}dan\'{i} pomoc\'{i} $ <_\mathbb{L} $
+\begin{definice}
+\[ x <_\mathbb{L} y \leftrightarrow  \] \[ \leftrightarrow ( y \in \mathbb{L} \wedge y \in \mathbb{L} \wedge (\rho(x)< \rho(y) \vee (\rho(x)=\rho(y) \wedge (x,y) \in \vartriangleleft(\rho(x)+1)))) \]
+\label{def:ord}
+\end{definice}
+\newpage
+\begin{veta}~\\
+$ \mathbb{L} $ lze dob\v{r}e uspo\v{r}\'{a}dat.
+\label{vet:ordering}
+\end{veta}
+\begin{proof}~\\
+Pou\v{z}ijeme uspo\v{r}\'{a}d\'{a}n\'{i} z definice \ref{def:ord} a definice \ref{def:orda} pro ka\v{z}d\'{e} $ x \in \mathbb{L} $, pak existuje $  \alpha  $ tak, \v{z}e $ x \subset L_\alpha $ a $ x $ je tedy dob\v{r}e uspo\v{r}\'{a}d\'{a}no uspo\v{r}\'{a}d\'{a}n\'{i}m  $ \vartriangleleft_\alpha $
+\end{proof}
+\begin{veta}~
+\label{vet:AC}
+\begin{center}
+Axiom konstruovatelnosti $ \rightarrow $ axiom v\'{y}b\v{e}ru.
+\end{center}
+\end{veta}
+\begin{proof}~\\
+Axiom konstruovatelnosti n\'{a}m \v{r}\'{i}k\'{a}, \v{z}e $ \mathbb{L} $ je cel\'{e} universum a v\v{e}ta \ref{vet:ordering} n\'{a}m \v{r}\'{i}k\'{a}, \v{z}e ka\v{z}dou mno\v{z}inu z $ \mathbb{L} $ lze dob\v{r}e uspo\v{r}\'{a}dat a tedy plat\'{i} WO. Pomoc\'{i} v\v{e}ty \ref{vet:WOAC} dostaneme, \v{z}e plat\'{i} axiom v\'{y}b\v{e}ru.
+\end{proof}
+\newpage
+\subsection{Zobecn\v{e}n\'{a} hypot\'{e}za kontinua}
+\begin{definice}~\\
+\label{def:vel}
+Definujme
+\[ \arrowvert A \arrowvert \leq \arrowvert B \arrowvert \Leftrightarrow   \text{existuje prost\'{a} funkce f }  f:A  \rightarrow B, \]
+\[ \arrowvert A \arrowvert = \arrowvert B \arrowvert \Leftrightarrow   \text{existuje bijekce f }  f:A  \rightarrow B .\]
+\end{definice}
+\begin{lemma}~\\
+\label{lem:usp}
+P\v{r}edpokl\'{a}dejme platnost axiom v\'{y}b\v{e}ru:\\
+Kdy\v{z} m\'{a}me funkci $ f $ z $A$ na $B$, tak \[ \arrowvert B \arrowvert \leq \arrowvert A \arrowvert . \]
+\end{lemma}
+\begin{proof}~\\
+Z axiom v\'{y}b\v{e}ru m\'{a}me, \v{z}e $A$ je dob\v{r}e uspo\v{r}\'{a}dan\'{a} n\v{e}jakou relac\'{i} $R$. \\
+Definujme funkci $g$ \[  g:B \rightarrow A  \] tak, \v{z}e $g(y)$ je $R$-nejmen\v{s}\'{i} prvek $ f^{-1}(\{y\}) .$\\
+Kdyby $g$ nebyla prost\'{a}, tak existuje $x,y$ pro kter\'{e} plat\'{i} \[ x \neq y \wedge g(x)=g(y),\]
+co\v{z} by z definice $g$ znamenalo, \v{z}e existuje $c$ takov\'{e}, \v{z}e $ f(c)=y \wedge f(c)=x $, co\v{z} pou\v{z}it\'{i}m transitivnosti relace rovnosti dostaneme $x=y$, co\v{z} je spor s p\v{r}edpokladem. 
+\end{proof} ~\\~\\
+Toto te\v{d} pou\v{z}ijeme spolu s poznatkem z lemma \ref{lem:enume} k dal\v{s}\'{i}mu d\r{u}kazu.
+\begin{lemma}
+~\\
+P\v{r}edpokl\'{a}dejme platnost axiom v\'{y}b\v{e}ru:\\
+\[ \arrowvert Df(A,n)\arrowvert \leq \omega  \]
+\label{lem:moh}
+\end{lemma}
+\begin{proof}~\\
+Definujme funkci $ H $ \[ H:\omega \rightarrow Df(A,n) ,\]
+\[ H(m)= En(m,A,n) .\]
+Funkce $ H $ bude na, proto\v{z}e v lemma \ref{lem:enume} jsme si mimojin\'{e} dok\'{a}zali, \v{z}e pro ka\v{z}d\'{e} $ x $ plat\'{i} \[ x \in Df(A,n) \rightarrow (\exists m \in \omega) x = En(m,A,n) .\]
+D\'{i}ky p\v{r}edpokladu platnosti axiom v\'{y}b\v{e}ru pou\v{z}ijeme lemma \ref{lem:usp} a dostaneme  
+\[ \arrowvert Df(A,n)\arrowvert \leq \omega .\]
+\end{proof}
+\begin{lemma}
+~\\
+\label{lem:mohdef}
+P\v{r}edpokl\'{a}dejme platnost axiom v\'{y}b\v{e}ru:\\
+\[ \arrowvert A \arrowvert \geq  \omega \rightarrow \arrowvert \mathfrak{DP}(A)\arrowvert=\arrowvert A \arrowvert\]
+\end{lemma}
+\begin{proof}~\\
+M\v{e}jme tedy  axiom v\'{y}b\v{e}ru a $ \arrowvert A \arrowvert \geq \omega :$\\
+Pro ka\v{z}d\'{e} $ m \in \omega $ plat\'{i}
+ \[ \arrowvert A^m \arrowvert= \arrowvert A \arrowvert .\]
+Z definice $ \mathfrak{DP}(A) $ v\'{i}me, \v{z}e 
+\[ \arrowvert \mathfrak{DP}(A) \arrowvert \leq \omega \times \arrowvert A^m \arrowvert \times \arrowvert  Df(A,n)\arrowvert .\] 
+Pak pomoc\'{i} lemma \ref{lem:moh} dostaneme
+\[ \arrowvert \mathfrak{DP}(A) \arrowvert \leq \omega \times \arrowvert A \arrowvert \times \omega .\]
+Co\v{z} n\'{a}m s p\v{r}edpokladem 
+\[ \arrowvert A \arrowvert \geq  \omega \]
+d\'{a}v\'{a}
+\[ \arrowvert \mathfrak{DP}(A) \arrowvert \leq  \arrowvert A \arrowvert .\]
+Z lemma \ref{lem:sub} dostaneme \[  A \subset \mathfrak{DP}(A)  .\]
+Definujme te\v{d} funkci $ H $ 
+\[ H: A \rightarrow \mathfrak{DP}(A), \]
+\[ H(a)=a  . \]
+Tato funkce $ H $ je identita na $ A $, kter\'{a} je  prost\'{a} proto\v{z}e pro ka\v{z}d\'{e} $ a,b \in A $ \[ H(a)=H(b) \rightarrow a=b, \] plat\'{i} z definice funkce $ H $.\\ Pak tedy 
+\[ \arrowvert A \arrowvert \leq  \arrowvert \mathfrak{DP}(A) \arrowvert .\]
+\v{C}\'{i}m\v{z} jsme dok\'{a}zali
+\[ \arrowvert A \arrowvert = \arrowvert \mathfrak{DP}(A) \arrowvert .\]
+\end{proof} 
+\begin{lemma}
+~\\
+\label{lem:velomg}
+P\v{r}edpokl\'{a}dejme platnost axiom v\'{y}b\v{e}ru, pak
+\[  \arrowvert \mathbb{L}_\omega \arrowvert = \omega .\]
+ \end{lemma}
+ \begin{proof}~\\
+ V\'{i}me, \v{z}e
+ \[ \mathbb{L}_\omega = \bigcup_{\alpha < \omega}\mathbb{L}_\alpha .\]
+Pro $ (\forall \alpha < \omega) $ plat\'{i}
+\[  \arrowvert \mathbb{L}_\alpha \arrowvert \leq \omega .\]
+Z toho dostaneme, \v{z}e plat\'{i} 
+ \[ \arrowvert \mathbb{L}_\omega \arrowvert \leq  \omega   \times \omega . \]
+ Z definice kardin\'{a}ln\'{i}ho sou\v{c}inu  dostaneme
+\[  \arrowvert \mathbb{L}_\omega \arrowvert \leq  \omega .\]
+V lemma \ref{lem:ord} jsme dok\'{a}zali, \v{z}e \[ \omega \subset \mathbb{L}_\omega .\]
+Definujme funkci $ H $ 
+\[ H: \omega \rightarrow \mathbb{L}_\omega, \]
+\[ H(a)=a  . \]
+Tato funkce $ H $ je identita na $ A $, kter\'{a} je  prost\'{a}, proto\v{z}e pro ka\v{z}d\'{e} $ a,b \in A $ plat\'{i}\[ H(a)=H(b) \rightarrow a=b \] z definice funkce $ H $. Z toho tedy pou\v{z}it\'{i}m definice \ref{def:vel} dostaneme
+\[\omega  \leq \arrowvert \mathbb{L}_\omega \arrowvert  .\]
+T\'{i}mto jsme dok\'{a}zali
+\[ \arrowvert \mathbb{L}_\omega \arrowvert = \omega .\]
+\end{proof}
+\begin{lemma}
+~\\
+P\v{r}edpokl\'{a}dejme platnost axiomu v\'{y}b\v{e}ru:\\
+Pak pro ka\v{z}d\'{e} $ \alpha \geq \omega  $
+\[ \arrowvert \mathbb{L}_\alpha \arrowvert = \alpha .\]
+\label{lem:velalp}
+\end{lemma}
+\begin{proof}~\\
+Transfinitn\'{i} indukc\'{i} pro $ \alpha \geq \omega  $ :
+\begin{description}
+  \item[$ \alpha=\omega $] ~\\
+Jsme dok\'{a}zali v lemma \ref{lem:velomg}.
+  \item[$ \alpha=\beta +1 $]~\\
+  Nech\v{t} tedy pro v\v{s}echny $\omega \leq \gamma < \alpha $ 
+  \[ \arrowvert \mathbb{L}_\gamma \arrowvert = \arrowvert \gamma \arrowvert .\]
+Tedy \[\mathbb{L}_\alpha=\mathfrak{DP}(\mathbb{L}_\beta)\]
+   Z lemma \ref{lem:mohdef} m\'{a}me 
+   \[ \arrowvert\mathfrak{DP}(L_\beta)\arrowvert=\arrowvert L_\beta \arrowvert.\]
+   Z kardin\'{a}ln\'{i} aritmetiky v\'{i}me 
+   \[ \arrowvert \alpha \arrowvert = \arrowvert \beta \arrowvert. \]
+A kone\v{c}n\v{e} z toho tedy 
+\[ \arrowvert \mathbb{L}_\alpha \arrowvert = \alpha .\]   
+ \item[$ \alpha $ je limitn\'{i} ordin\'{a}l r\r{u}zn\'{y} od $ \omega $]~\\
+  Nech\v{t} tedy pro v\v{s}echny $\omega \leq \beta< \alpha $ 
+   \[ \arrowvert \mathbb{L}_\beta \arrowvert = \arrowvert \beta \arrowvert .\]
+  V\'{i}me, \v{z}e
+ \[ \mathbb{L}_\alpha = \bigcup_{\beta < \alpha}\mathbb{L}_\beta .\]
+ Z induk\v{c}n\'{i}ho p\v{r}edpokladu pro $ (\forall \beta < \alpha) $ m\'{a}me
+\[  \arrowvert \mathbb{L}_\beta \arrowvert \leq \arrowvert \alpha \arrowvert.\]
+Tedy z toho dostaneme, \v{z}e plat\'{i} 
+\[ \arrowvert \mathbb{L}_\alpha \arrowvert \leq  \arrowvert \alpha \arrowvert   \times \arrowvert  \alpha \arrowvert  .\]
+ Z definice kardin\'{a}ln\'{i}ho sou\v{c}inu dostaneme
+\[  \arrowvert \mathbb{L}_\alpha \arrowvert \leq  \alpha .\]
+V lemma \ref{lem:ord} jsme dok\'{a}zali, \v{z}e pro ka\v{z}d\'{e} $ \alpha $ plat\'{i} \[ \alpha \subset \mathbb{L}_\alpha .\]
+Definujme funkci $ H $ p\v{r}edpisem 
+\[ H: \alpha \rightarrow \mathbb{L}_\alpha ,\]
+\[ H(a)=a   .\]
+Tato funkce je identita na $ \alpha $, kter\'{a} je  prost\'{a}, proto\v{z}e pro ka\v{z}d\'{e} $ a,b \in A $ plat\'{i}\[ H(a)=H(b) \rightarrow a=b \]  z definice funkce $ H $. Z toho tedy pou\v{z}it\'{i}m definice \ref{def:vel} dostaneme
+\[\alpha  \leq \arrowvert \mathbb{L}_\alpha \arrowvert  .\]
+T\'{i}m jsme dok\'{a}zali
+\[ \arrowvert \mathbb{L}_\alpha \arrowvert = \alpha .\]
+\end{description}
+\end{proof}
+
+\begin{definice}
+\[ o(M)= M  \cap  \textit{On} \]
+\end{definice}
+\begin{veta}~\\
+\label{vet:o(M)}
+Je tady kone\v{c}n\'{a} konjunkce $ \varsigma $ axiom\r{u} $ ZF - P + V=L $, tak \v{z}e
+\[ \forall M ( \text{M je transitivn\'{i}} \wedge  \varsigma^M \rightarrow (L_{o(M)}= M))  .\]
+\end{veta}
+\begin{proof}~\\
+ Nech\v{t}  $ \varsigma $ obsahuje axiomy dokazuj\'{i}c\'{i}, \v{z}e tu nen\'{i} nejv\v{e}t\v{s}\'{i} ordin\'{a}l.\\
+ M\v{e}jme transitivn\'{i} $ M $ a nech\v{t} plat\'{i} $ \varsigma^M $, pak o$ (M) $ je limitn\'{i}  ordin\'{a}l, proto\v{z}e kdyby $ o(M)  $ byl n\'{a}sledn\'{i}k $ \beta $, tak $ \beta $ je nejv\v{e}t\v{s}\'{i} ordin\'{a}l. $o(M)= \emptyset $ nem\r{u}\v{z}e b\'{y}t, proto\v{z}e z axiom\r{u} $ ZF $ mus\'{i} obsahovat ordin\'{a}l $ \emptyset $. \\
+ Tedy z toho, \v{z}e $ o(M) $ je limitn\'{i}  ordin\'{a}l dostaneme
+\[  L_{o(M)}=\bigcup_{\alpha \in M} L_\alpha .\]
+M\v{e}jme 
+\[ \mathbb{L}^M = \{x \in M: (\exists \alpha (x \in L_\alpha))^M \} .\]
+Z absolutnosti $ L_\alpha $ dostaneme 
+\[ \{x \in M: (\exists \alpha (x \in L_\alpha))^M \} = \bigcup_{\alpha \in M} L_\alpha . \]
+Dohromady n\'{a}m to d\'{a}v\'{a}
+\[  L_{o(M)}=\mathbb{L}^M .\]
+Z definice $ \{x \in M: (\exists \alpha (x \in L_\alpha))^M \} $ dost\'{a}v\'{a}me, \v{z}e plat\'{i} 
+\[ L_{o(M)} \subset M .\]
+Z axiomu konstruovatelnosti relativizovan\'{e}m v M dostaneme \[ (\forall x (x \in \mathbb{L}))^M, \] z \v{c}eho\v{z} dost\'{a}v\'{a}me, \v{z}e plat\'{i} 
+\[ M \subset L_{o(M)} \text{.}\]
+Z toho tedy pak dostaneme 
+\[ M = L_{o(M)} \text{.}\]
+\end{proof}
+\begin{definice}
+\textbf{Mostowsk\'{e}ho kolapsuj\'{i}c\'{i} zobrazen\'{i}}\\
+Nech\v{t} $R$ je \'{u}zk\'{a} fundovan\'{a} relace na $A$. Definujme Mostowsk\'{e}ho kolapsuj\'{i}c\'{i} zobrazen\'{i} $G$ z $A,R$ takto:\[ G(x)=\{G(y): y\in A \wedge yRx\}. \]
+Mostowsk\'{e}ho kolaps $M$ je pak mno\v{z}ina
+\[ M=\{G(y): y\in A\}.
+ \]
+\end{definice}
+\begin{veta}
+~\\
+M\v{e}jme Mostowsk\'{e}ho kolapsuj\'{i}c\'{i} zobrazen\'{i}. Pokud $  R $ na $A$ je extenzionaln\'{i}, tak $G$ je jednozna\v{c}n\'{y} izomorfimus na $M$. $M$ je jednozna\v{c}n\v{e} ur\v{c}en\'{a} transtitivn\'{i} t\v{r}\'{i}da.
+\label{vet:Most}
+\end{veta}
+\begin{proof}
+~\\
+Funkce $G$ je ur\v{c}it\v{e} na, proto\v{z}e $M$ definov\'{a}no jako obor hodnot funkce $G$.\\
+Te\v{d} budeme pokra\v{c}ovat d\r{u}kazem,\v{z}e $G$ je prost\'{a}. D\v{u}kaz povedeme sporem.\\
+Nech\v{t} m\'{a}me $x$ jako $R$-nejmen\v{s}\'{i} prvek pro kter\'{y} plat\'{i}:
+\[ \{x \in A:(\exists y \in A)(x\neq y \wedge G(y)=G(X))\} .\]
+\newpage
+Vzhledem k extenzionalit\v{e} relace $R$ m\r{u}\v{z}ou nastat tyto dva p\v{r}\'{i}pady:
+\begin{enumerate}
+  \item M\v{e}jme n\v{e}jak\'{e} $ z \in A $ takov\'{e}, \v{z}e $ zRx  $ a $  \neg zRy $:\\
+  Z definice funkce $ G $ dostaneme
+  \[ G(z) \in G(x) .\]
+  Z p\v{r}edpokladu m\'{a}me 
+  \[ G(x)=G(y) .\]
+  Z toho plyne, \v{z}e existuje n\v{e}jak\'{e} $ w \in A $, takov\'{e} \v{z}e $  wRy $.\\
+  Z toho dostaneme, \v{z}e $ w \neq z $.\\
+  Co\v{z} znamen\'{a}, z je $R$-nejmen\v{s}\'{i} prvek, co\v{z} je spor s p\v{r}edpokladem.
+  \item Druhy p\v{r}\'{i}pad je, \v{z}e m\'{a}me $ a \in A $ takov\'{e}, \v{z}e $ aRy  $ a $  \neg aRx $:\\
+   Z definice funkce G dostaneme
+  \[ G(a) \in G(y) .\]
+  Z p\v{r}edpokladu m\'{a}me 
+  \[ G(x)=G(y) .\]
+  Z toho plyne, \v{z}e existuje n\v{e}jak\'{e} $ b \in A $, takov\'{e} \v{z}e $  bRx $.\\
+  Z toho dostaneme, \v{z}e $ b \neq a $.\\
+  Co\v{z} znamen\'{a}, b je $R$-nejmen\v{s}\'{i} prvek, co\v{z} je spor s p\v{r}edpokladem.
+\end{enumerate}
+Te\v{d} si ov\v{e}\v{r}\'{i}me vz\'{a}jemnost relac\'{i} nebo-li:
+\[ (\forall x,y \in A)(xRy \leftrightarrow G(x) \in G(y)).  \]
+Tato ekvivalence plyne p\v{r}\'{i}mo z definice $G$.\\
+Ov\v{e}\v{r}me jednozna\v{c}nost $G$. M\v{e}jme tedy $G'$ spl\v{n}uj\'{i}c\'{i} podm\'{i}nky. \\
+M\'{a}me tedy
+\[ (\forall x,y \in A)(xRy \leftrightarrow G(x) \in G(y)),  \]
+\[ (\forall x,y \in A)(xRy \leftrightarrow G'(x) \in G'(y)).  \]
+Z toho dostaneme
+\[  (\forall x,y \in A)(G(x) \in G(y) \leftrightarrow G'(x) \in G'(y)) .\]
+Tak\v{z}e z toho m\'{a}me 
+\[ G=G' .\]
+Nakonec m\v{e}jme tedy $ M'$ spl\v{n}uj\'{i}c\'{i} podm\'{i}nky.
+Z jednozna\v{c}nosti $G$ dostaneme \[ M=M' .\]
+Nakonec m\v{e}jme  \[ x \in M  .\] Z definice $M$  pro n\v{e}jak\'{e}  \[ y \in A  \] dostaneme \[ G(y) \in M  .\]
+M\v{e}jme te\v{d}  \[ w \in G(y)  .\] Z definice $G$ pro n\v{e}jak\'{e} \[  c \in A \]  dostaneme  \[ G(c)=w  .\]
+Z definice $M$ tedy \[ w \in M . \]
+$M$ je tedy transitivn\'{i}.
+\end{proof}
+\begin{veta}~\\
+M\v{e}jme formule $\phi_0,...,\phi_{n}$, tak \begin{center}
+$ (\forall X \subset \mathbb{L}) (\exists A)[X \subset A \subset  \mathbb{L} \wedge (\phi_0,...,\phi_{n} \text{ jsou absolutn\'{i} pro A,}\mathbb{L})\wedge$
+\[ \wedge \arrowvert A\arrowvert \leq max(\omega,\arrowvert X\arrowvert )] .\]
+\end{center}
+\label{vet:LSt}
+\end{veta}  
+\begin{proof}~\\
+M\v{e}jme $ \phi_0,...,\phi_{n} $ podmno\v{z}inov\v{e} uzav\v{r}en\'{y} seznam formul\'{i}.\\ 
+Najd\v{e}me te\v{d} $ \alpha  $ tak, \v{z}e $ X \subset L_\alpha $ a podle v\v{e}ty \ref{vet:refle} existuje $ \beta > \alpha  $ tak, \v{z}e $ \phi_0,...,\phi_{n} $ je absolutn\'{i} pro $ L_\beta , \mathbb{L}$.
+$ L_\beta $ je podle v\v{e}ty \ref{vet:ordering} dob\v{r}e uspo\v{r}\'{a}dan\'{a} uspo\v{r}\'{a}dan\'{i}m $ \vartriangleleft $.
+Kdy\v{z} $ \phi_i  $ m\'{a} $ d_i $ voln\'{y}ch formul\'{i} $ y_1,...,y_{d_i} $ definujme funkci $ H_i $
+\[ H_i:{L_\beta}^{d_i} \rightarrow  {L_\beta} .\]
+Nech\v{t} tedy $ \phi_i  $ je formule tvaru $ (\exists x)(\phi_j(x,y_1,...,y_{d_i})) $, pak 
+$ H_i(y_1,...,y_{d_i}) $ je $ \vartriangleleft $-nejmen\v{s}\'{i} takov\'{e} $x$, \v{z}e pro n\v{e}j plat\'{i}\[ (\exists x \in L_\beta)(\phi_j(x,y_1,...,y_{d_i}) ).\]
+Pokud pro n\v{e}jak\'{e} $x$ plat\'{i} 
+\[\neg (\exists x \in L_\beta)(\phi_j(x,y_1,...,y_{d_i}) ),\] pak $ H_i(y_1,...,y_{d_i}) $ je $ \vartriangleleft $-nejmen\v{s}\'{i} prvek $ L_\beta $. \\ Pokud $ \phi_i  $ nen\'{i} existen\v{c}n\'{i} formule, pak $ H_i(y_1,...,y_{d_i}) $ je $ \vartriangleleft $-nejmen\v{s}\'{i} prvek $ L_\beta $. \\
+Pro konstantu definujme $ H $ jako n\v{e}jak\'{y} prvek $ L_\beta $.\\
+Definujme $ A $ jako uz\'{a}v\v{e}r $X$ na funkce $ H_0,...,H_n $. \\Podle lemma \ref{lem:ref} jsou $\phi_0,...,\phi_{n}$ absolutn\'{i} pro $A, \mathbb{L} $.\\
+Pak z definice $ A  $ vid\'{i}me 
+\[ \arrowvert A\arrowvert \leq \omega \times \arrowvert X \arrowvert .\]
+Z \v{c}eho\v{z} plyne
+\[ \arrowvert A\arrowvert \leq max(\omega,\arrowvert X \arrowvert) .\]
+\end{proof}
+\begin{lemma}~\\
+Nech\v{t} $  G $ je bijekce z $ A $ na $ M $ s izomorfismem pro relaci $ \in $, tak pro libovolnou formuli $ \phi(x_0,...,x_n) $ 
+\[ \forall x_0,...,x_n \in A [  \phi(x_0,...,x_n)^A \leftrightarrow  \phi(G(x_0),...,G(x_n))^M   ] .\]
+\label{lem:bij}
+\end{lemma}
+\begin{proof}
+Indukc\'{i} podle slo\v{z}itosti formule:
+\begin{description}
+\item[$x=y$:]
+~\\
+Podle definice $G$ a z definice relativizace dostaneme \[ G(y)=G(x)\leftrightarrow y=x .\]
+\item[$x \in y: $]
+~\\
+Z izomorfismu pro relaci $ \in $ a z definice relativizace m\'{a}ne \[ (x\in y) \leftrightarrow G(x)\in G(y) .\]
+\end{description}
+Nech\v{t} tedy m\'{a}me induk\v{c}n\'{i} p\v{r}edpoklady  \[ \phi(x_0,...,x_n)^A \leftrightarrow  \phi(G(x_0),...,G(x_n))^M, \]  \[ \pi(x_0,...,x_n)^A \leftrightarrow  \pi(G(x_0),...,G(x_n))^M . \]
+\begin{description}
+\item[$\phi \wedge \pi: $] ~\\
+Podle definice \ref{def:relat} je 
+\[ ( \phi(x_0,...,x_n \wedge  \pi(x_0,...,x_n) )^{A} \leftrightarrow ( \phi(x_0,...,x_n)^{A}\wedge \pi(x_0,...,x_n)^{A})  .\] \newpage
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu dost\'{a}v\'{a}me \begin{center}
+$ ( \phi(x_0,...,x_n)^{A}\wedge \pi(x_0,...,x_n)^{A}) \leftrightarrow  $ $ \leftrightarrow( \phi(G(x_0),...,G(x_n))^{M}\wedge \pi(G(x_0),...,G(x_n))^{M}),  $
+\end{center}
+co\v{z} podle definice \ref{def:relat} je \[ ( \phi(G(x_0),...,G(x_n)) \wedge  \pi(G(x_0),...,G(x_n)) )^{M} .\]
+\item[$\neg \phi: $]~\\
+Podle definice \ref{def:relat} je 
+\[ ( \neg \phi(x_0,...,x_n)^{A} \leftrightarrow ( \neg \phi(x_0,...,x_n)^{A} ).\] 
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu dost\'{a}v\'{a}me 
+ \[ ( \neg \phi(x_0,...,x_n)^{A}) \leftrightarrow ( \neg \phi(G(x_0),...,G(x_n))^{M}), \]
+co\v{z} podle definice \ref{def:relat} je \[  (\neg \phi(G(x_0),...,G(x_n)))^{M}.\]
+\item[$(\exists u\in x)\phi(u,x,...): $]~ \\
+Podle definice \ref{def:relat} je 
+\[  (\exists u(u\in x \wedge \varphi(x_0,...,x_n)))^{A} \leftrightarrow ((\exists u \in A)(u\in x \wedge \varphi(x_0,...,x_n))^{A}) .\]
+Z induk\v{c}n\'{i}ho p\v{r}edpokladu a definice $ G $
+\begin{center}
+$  ((\exists u \in A)(u\in x \wedge \varphi(x_0,...,x_n))^{A}) \leftrightarrow $ \\$ \leftrightarrow (((\exists G(u) \in M)(G(u)\in G(x) \wedge \varphi(G(x_0),...,G(x_n)))^{M})  $.
+\end{center}
+\end{description}
+\end{proof}
+\begin{veta}
+\label{vet:konstrukce}
+Nech\v{t} $\phi_0,...,\phi_{n-1}$ jsou sentence tak
+\begin{center}
+$ (\forall X \subset \mathbb{L})[ X \text{ je transitivn\'{i}} \rightarrow \exists M [ X \subset M \wedge \bigwedge_{i<n}({\phi_i}^M \leftrightarrow {\phi_i}^\mathbb{L})\wedge $ $ \wedge M \text{ je transitivn\'{i}} \wedge \arrowvert M \arrowvert \leq max(\omega,\arrowvert X\arrowvert)]]  $
+\end{center}
+\end{veta}
+\begin{proof}~\\
+Bez \'{u}jmy na obecnosti nech\v{t} $ \phi_{n-1} $ je\textit{ axiom extenzionality}.\\ V $ \mathbb{L} $ plat\'{i} axiom extenzionality, tak\v{z}e podle v\v{e}ty \ref{vet:LSt} m\'{a}me $ A $ pro kter\'{e} plat\'{i} 
+\[ \bigwedge_{i<n}({\phi_i}^A \leftrightarrow {\phi_i}^\mathbb{L}) .\] 
+V $ A $  plat\'{i} \textit{axiom extenzionality}. \\ M\'{a}me tedy $ A,\in $ tak, \v{z}e $ \in $ je extenzion\'{a}ln\'{i}, \'{u}zk\'{a}, fundovan\'{a} relace na $ A $. 
+Podle v\v{e}ty \ref{vet:Most} m\'{a}me $ M $, kter\'{e} je transitivn\'{i}.\\ Z bijekce $ G $ pro $ M $ plat\'{i} \[ \arrowvert M \arrowvert=\arrowvert A \arrowvert .\] Z toho tedy
+\[ \arrowvert M \arrowvert \leq max(\omega,\arrowvert X\arrowvert). \]
+Z lemma \ref{lem:bij} dostaneme 
+\[ \bigwedge_{i<n}({\phi_i}^M \leftrightarrow {\phi_i}^\mathbb{L}) .\] 
+Nakonec si doka\v{z}me $ X \subset M $:\\
+M\v{e}jme pro libovoln\'{e} $ x \in X  $
+\[ G(x)=\{G(y):y\in X \wedge y \in x \},\]
+z transitivity $ X $ dostaneme, \v{z}e pro ka\v{z}d\'{e} $ y \in x $ plat\'{i} \[ y \in X .\] 
+To n\'{a}m d\'{a}v\'{a}, \v{z}e pro libovoln\'{e} $ x \in X$ m\r{u}\v{z}em $ G(x) $ definovat ekvivalentn\v{e} jako 
+\[ G(x)=\{G(y): y \in x \}. \] 
+Z \v{c}eho\v{z} $ \in $-indukc\'{i} p\v{r}es $ x $ plyne, \v{z}e pro ka\v{z}d\'{e} $ x \in X $ plat\'{i} \[ G(x)=x .\]
+Z definice $ M  $ tedy dostaneme 
+\[ x \in M .\]
+\end{proof}
+\begin{lemma}~\\
+\label{lem:subsetLem}
+Pro libovoln\'{e} $ \alpha $ plat\'{i}
+\[ (\forall \beta \leq \alpha) (L_\beta \subset L_\alpha). \]
+\end{lemma}
+\begin{proof}~\\
+Indukc\'{i} podle $ \alpha $:
+\begin{description}
+  \item[$ \alpha=\emptyset $]~\\ Jedin\'{a} mo\v{z}nost zde je, \v{z}e $ \beta $ m\r{u}\v{z}e jen $ \emptyset $, proto\v{z}e pak m\'{a}me \[ L_\emptyset \subset L_\emptyset, \] co\v{z} je spln\v{e}no trivi\'{a}ln\v{e}.
+  \item[$ \alpha=\gamma +1$]~\\
+  Nech\v{t} lemma plat\'{i} pro v\v{s}echna $ \beta \leq \gamma $.\\
+  Z lemma \ref{lem:Ltran} pro $ L_\gamma $ v\'{i}me \v{z}e $ L_\gamma $ je transitivn\'{i}. \\
+  Pou\v{z}ijeme lemma \ref{lem:sub} a dostaneme\[  L_\gamma \subset L_\alpha .\]
+  Pro $ \beta < \gamma $  m\'{a}me \[  L_\beta \subset L_\alpha \] z tranzitivity podmno\v{z}in.
+  \item[$ \alpha$ je limitn\'{i} ordin\'{a}l]~\\
+  Plyne p\v{r}\'{i}mo z definice $ L_\alpha $.
+\end{description}
+\end{proof}
+\begin{veta}
+\label{vet:nasle}
+\[ V=\mathbb{L} \rightarrow ((\forall \alpha \in  \textit{On})((\alpha \geq  \omega) \rightarrow P(L_\alpha)\subset L_{\alpha^{+}}) \]
+\end{veta}
+\begin{proof}~\\
+Nech\v{t} $ \varsigma $ je kone\v{c}n\'{a} konjunkce axiom\r{u} z v\v{e}ty \ref{vet:o(M)}, pak vezm\v{e}me formuli $ \chi \leftrightarrow  \varsigma \wedge V=\mathbb{L} $ .\\
+Nech\v{t} tedy plat\'{i} $ V=\mathbb{L} $ a nech\v{t} m\v{e}jme n\v{e}jak\'{e} $ x $ tak, \v{z}e \[ x\in P(L_\alpha) .\]
+Polo\v{z}me \[ X=L_\alpha \cup \{x\} .\]
+Z lemma \ref{lem:velalp} a pravidel kardinaln\'{i} aritmetiky dostaneme 
+\[ \arrowvert X \arrowvert=\arrowvert \alpha \arrowvert .\]
+Z v\v{e}ty \ref{vet:AC} v\'{i}me, \v{z}e plat\'{i} axiom v\'{y}b\v{e}ru.\\ 
+Pak podle v\v{e}ty \ref{vet:konstrukce} dostaneme transitivn\'{i} $ M $, v kter\'{e}m plat\'{i}  $ \chi^M .$\\
+Podle v\v{e}ty \ref{vet:o(M)} dostaneme, \v{z}e \[ M=L_{o(M)} .\]
+Z v\v{e}ty \ref{vet:konstrukce} d\'{a}le v\'{i}me, \v{z}e
+\[ \arrowvert M \arrowvert=\arrowvert \alpha \arrowvert .\]
+Z toho dost\'{a}v\'{a}me, \v{z}e   
+\[ \arrowvert o(M) \arrowvert <  \arrowvert \alpha^+ \arrowvert , \]
+jinak by $ o(M) $ bylo v rozporu s lemma \ref{lem:velalp}. \\
+Podle lemma \ref{lem:subsetLem} dost\'{a}v\'{a}me 
+\[ L_{o(M)}\subset L_{\alpha^+} .\]
+Z v\v{e}ty \ref{vet:konstrukce} d\'{a}le v\'{i}me, \v{z}e \[ X \subset M .\]
+Co\v{z} n\'{a}m dohromady d\'{a}  \[ x \in L_{\alpha^+} .\] 
+T\'{i}m jsme dok\'{a}zali
+\[ P(L_\alpha)\subset L_{a^+} .\]
+\end{proof}
+\begin{veta}
+\[ V=\mathbb{L} \rightarrow (\forall \alpha \geq \omega  (2^{\aleph_\alpha}= {\aleph_{\alpha^+}}))   \]
+\end{veta}
+\begin{proof}~\\
+Nech\v{t} plat\'{i} $ V=\mathbb{L} $ a m\v{e}jme dan\'{e} $ \kappa \geq \omega .$ \\ Podle v\v{e}ty \ref{vet:nasle}
+\[ P(L_\kappa)\subset L_{\kappa^{+}} .\]
+Z monotonie potence mno\v{z}in a z \[ \kappa \subset L_\kappa, \]co\v{z} jsme dok\'{a}zali v pr\r{u}b\v{e}hu d\r{u}kazu \ref{lem:ord},
+dostaneme 
+ \[ P(\kappa) \subset P(L_\kappa) .\]
+Z transitivity podmno\v{z}in dostaneme
+\[ P(\kappa)\subset L_\kappa^+ .\]
+Podle toho existuje $ f $, tak\v{z}e \[ f:P(\kappa) \rightarrow L_\kappa^+ ,\] \[ f(x)=x .\] Funkce $ f $ je prost\'{a} 
+Z toho tedy pou\v{z}it\'{i}m definice \ref{def:vel} dostaneme \[ 2^\kappa \leq \kappa^+.\]
+Druh\'{a} nerovnost je d\r{u}sledek Cantorovy v\v{e}ty. A tedy dost\'{a}v\'{a}me  
+\[ 2^\kappa = \kappa^+ .\]
+\end{proof}
+\clearpage\fancyhead[R]{\slshape\nouppercase{\leftmark}} %redefinice chování záhlaví pro stránky s literaturou, pøíp. s rejstøíkem
+\begin{thebibliography}{Gam06}
+\bibitem[Ku]{Kuhnen} K.Kuhnen, \textit{Set theory: An introduction to independence proofs} North Holland, Elsevier, 1980.
+\bibitem[Je]{Jech} T. Jech, \textit{Set theory}, Springer, 2003. 
+\bibitem[BaS]{Balcar a Stepanek}B. Balcar a P. \v{S}t\v{e}p\'{a}nek,\textit{ Teorie mno\v{z}in}, Academia, 2000.
+\end{thebibliography}
+%\printindex %bude-li rejstøík
+\end{document}
